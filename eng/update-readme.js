@@ -1,13 +1,35 @@
 #!/usr/bin/env node
 
+// Note 1: Script purpose
+// This script generates README and category documentation files for the repository.
+// It scans the content directories (prompts, instructions, chatmodes, agents,
+// collections), extracts metadata (titles, descriptions, MCP server info), and
+// writes formatted Markdown tables into the `docs/` folder and individual
+// collection READMEs. Running this script keeps the documentation in sync with
+// the repository content.
+
+// Note 2: Core Node.js modules used
+// - fs: file system operations (read/write/list)
+// - path: cross-platform path manipulation
 const fs = require("fs");
 const path = require("path");
+
+// Note 3: YAML/markdown helpers imported from yaml-parser
+// These functions parse collection YAML files and extract frontmatter and MCP
+// server configuration from markdown files (agents, prompts, chatmodes,
+// instructions). They centralize parsing logic so generators below can focus on
+// formatting and output.
 const {
   parseCollectionYaml,
   extractMcpServers,
   extractMcpServerConfigs,
   parseFrontmatter,
 } = require("./yaml-parser");
+
+// Note 4: Project templates, constants, and directories
+// These constants are defined in `eng/constants.js`. The TEMPLATES object
+// contains markdown snippets used as section headers and usage notes. Other
+// constants reference the repository layout so this script can locate content.
 const {
   TEMPLATES,
   AKA_INSTALL_URLS,
@@ -24,47 +46,58 @@ const {
 } = require("./constants");
 
 // Cache of MCP registry server names (lower-cased) loaded from github-mcp-registry.json
-let MCP_REGISTRY_SET = null;
+// 使用Map代替数组以提高查找性能，将displayName作为键，完整对象作为值
+let MCP_REGISTRY_MAP = null;
+
 /**
  * Loads and caches the set of MCP registry server display names (lowercased).
  *
  * Behavior:
- * - If a cached set already exists (MCP_REGISTRY_SET), it is returned immediately.
+ * - If a cached map already exists (MCP_REGISTRY_MAP), it is returned immediately.
  * - Attempts to read a JSON registry file named "github-mcp-registry.json" from the
  *   same directory as this script.
- * - Safely handles missing file or malformed JSON by returning an empty Set.
+ * - Safely handles missing file or malformed JSON by returning an empty Map.
  * - Extracts server display names from: json.payload.mcpRegistryRoute.serversData.servers
- * - Normalizes names to lowercase and stores them in a Set for O(1) membership checks.
+ * - Normalizes names to lowercase and stores them in a Map for O(1) membership checks.
  *
  * Side Effects:
- * - Mutates the module-scoped variable MCP_REGISTRY_SET.
+ * - Mutates the module-scoped variable MCP_REGISTRY_MAP.
  * - Logs a warning to console if reading or parsing the registry fails.
  *
- * @returns {{ name: string, displayName: string }[]} A Set of lowercased server display names. May be empty if
+ * @returns {Map<string, { name: string, displayName: string }>} A Map of lowercased server display names. May be empty if
  *          the registry file is absent, unreadable, or malformed.
  *
- * @throws {none} All errors are caught internally; failures result in an empty Set.
+ * @throws {none} All errors are caught internally; failures result in an empty Map.
  */
 function loadMcpRegistryNames() {
-  if (MCP_REGISTRY_SET) return MCP_REGISTRY_SET;
+  // Return cached result if available
+  if (MCP_REGISTRY_MAP) return MCP_REGISTRY_MAP;
+  
   try {
     const registryPath = path.join(__dirname, "github-mcp-registry.json");
     if (!fs.existsSync(registryPath)) {
-      MCP_REGISTRY_SET = [];
-      return MCP_REGISTRY_SET;
+      MCP_REGISTRY_MAP = new Map();
+      return MCP_REGISTRY_MAP;
     }
     const raw = fs.readFileSync(registryPath, "utf8");
     const json = JSON.parse(raw);
     const servers = json?.payload?.mcpRegistryRoute?.serversData?.servers || [];
-    MCP_REGISTRY_SET = servers.map((s) => ({
-      name: s.name,
-      displayName: s.display_name.toLowerCase(),
-    }));
+    
+    // 使用Map代替数组以提高查找性能
+    // Map结构提供了O(1)的查找时间复杂度，而数组的find方法是O(n)
+    MCP_REGISTRY_MAP = new Map();
+    servers.forEach((s) => {
+      const displayName = s.display_name.toLowerCase();
+      MCP_REGISTRY_MAP.set(displayName, {
+        name: s.name,
+        displayName: displayName,
+      });
+    });
   } catch (e) {
     console.warn(`Failed to load MCP registry: ${e.message}`);
-    MCP_REGISTRY_SET = [];
+    MCP_REGISTRY_MAP = new Map();
   }
-  return MCP_REGISTRY_SET;
+  return MCP_REGISTRY_MAP;
 }
 
 // Add error handling utility
@@ -148,8 +181,8 @@ function extractTitle(filePath) {
           filePath.includes(".prompt.md")
             ? ".prompt.md"
             : filePath.includes(".chatmode.md")
-            ? ".chatmode.md"
-            : ".instructions.md"
+              ? ".chatmode.md"
+              : ".instructions.md"
         );
         return basename
           .replace(/[-_]/g, " ")
@@ -408,9 +441,8 @@ function generateMcpServerLinks(servers) {
         `[![Install MCP](${badges[2].url})](https://aka.ms/awesome-copilot/install/mcp-visualstudio/mcp-install?${encodedConfig})`,
       ].join("<br />");
 
-      const registryEntry = registryNames.find(
-        (entry) => entry.displayName === serverName.toLowerCase()
-      );
+      // 使用Map的get方法进行O(1)查找，替代之前的数组find方法
+      const registryEntry = registryNames.get(serverName.toLowerCase());
       const serverLabel = registryEntry
         ? `[${serverName}](${`https://github.com/mcp/${registryEntry.name}`})`
         : serverName;
@@ -434,16 +466,24 @@ function generateAgentsSection(agentsDir) {
   });
 }
 
+// Note 5: Unified Content Generator
+// This is the core function that generates documentation for both chat modes and agents.
+// It follows a template pattern where common table generation logic is parameterized
+// to handle different content types with their specific needs.
+
 /**
- * Unified generator for chat modes & agents (future consolidation)
- * @param {Object} cfg
- * @param {string} cfg.dir - Directory path
- * @param {string} cfg.extension - File extension to match (e.g. .chatmode.md, .agent.md)
- * @param {string} cfg.linkPrefix - Link prefix folder name
- * @param {string} cfg.badgeType - Badge key (mode, agent)
- * @param {boolean} cfg.includeMcpServers - Whether to include MCP server column
- * @param {string} cfg.sectionTemplate - Section heading template
- * @param {string} cfg.usageTemplate - Usage subheading template
+ * Unified generator for chat modes & agents
+ * Handles common patterns for generating documentation tables while allowing
+ * for content-specific customization (e.g., MCP server info for agents).
+ *
+ * @param {Object} cfg Configuration object
+ * @param {string} cfg.dir - Directory to scan for content files
+ * @param {string} cfg.extension - File type to process (.chatmode.md, .agent.md)
+ * @param {string} cfg.linkPrefix - URL path prefix for content type
+ * @param {string} cfg.badgeType - Type for install badge generation
+ * @param {boolean} cfg.includeMcpServers - Add MCP server column (agents only)
+ * @param {string} cfg.sectionTemplate - Markdown section header
+ * @param {string} cfg.usageTemplate - Usage instructions template
  */
 function generateUnifiedModeSection(cfg) {
   const {
@@ -492,21 +532,33 @@ function generateUnifiedModeSection(cfg) {
     }
 
     if (includeMcpServers) {
-      content += `| [${title}](../${link})<br />${badges} | ${
-        description && description !== "null" ? description : ""
-      } | ${mcpServerCell} |\n`;
+      content += `| [${title}](../${link})<br />${badges} | ${description && description !== "null" ? description : ""
+        } | ${mcpServerCell} |\n`;
     } else {
-      content += `| [${title}](../${link})<br />${badges} | ${
-        description && description !== "null" ? description : ""
-      } |\n`;
+      content += `| [${title}](../${link})<br />${badges} | ${description && description !== "null" ? description : ""
+        } |\n`;
     }
   }
 
   return `${sectionTemplate}\n${usageTemplate}\n\n${content}`;
 }
 
+// Note 6: Collection Documentation Generator
+// This function handles the special case of collections, which have a more complex
+// structure than individual content items. Collections can include multiple types
+// of content (prompts, chat modes, agents) and have their own metadata.
+//
+// Key responsibilities:
+// - Parse collection YAML files
+// - Extract metadata (name, description, tags)
+// - Generate installation badges
+// - Create formatted tables with item counts
+// - Handle featured vs regular collections
+
 /**
  * Generate the collections section with a table of all collections
+ * Scans the collections directory for .collection.yml files and generates
+ * a formatted table showing each collection's contents and metadata.
  */
 function generateCollectionsSection(collectionsDir) {
   // Check if collections directory exists, create it if it doesn't
@@ -657,8 +709,22 @@ function generateFeaturedCollectionsSection(collectionsDir) {
   return `${TEMPLATES.featuredCollectionsSection}\n\n${featuredContent}`;
 }
 
+// Note 9: Collection README Generator
+// This function generates individual README files for each collection.
+// These READMEs provide detailed documentation about the collection's contents,
+// including:
+// - Collection metadata (name, description, tags)
+// - Table of included items with their types
+// - Usage instructions for each item (when provided)
+// - Optional collection badge
+//
+// The function handles different display options (alpha vs manual ordering)
+// and includes special formatting for items that require MCP servers.
+
 /**
  * Generate individual collection README file
+ * Creates a detailed markdown document explaining the collection's
+ * contents and how to use them.
  */
 function generateCollectionReadme(collection, collectionId) {
   if (!collection || !collection.items) {
@@ -669,7 +735,11 @@ function generateCollectionReadme(collection, collectionId) {
   const description = collection.description || "No description provided.";
   const tags = collection.tags ? collection.tags.join(", ") : "None";
 
-  let content = `# ${name}\n\n${description}\n\n`;
+  let content = `# ${name}
+
+${description}
+
+`;
 
   if (collection.tags && collection.tags.length > 0) {
     content += `**Tags:** ${tags}\n\n`;
@@ -709,10 +779,10 @@ function generateCollectionReadme(collection, collectionId) {
       item.kind === "chat-mode"
         ? "Chat Mode"
         : item.kind === "instruction"
-        ? "Instruction"
-        : item.kind === "agent"
-        ? "Agent"
-        : "Prompt";
+          ? "Instruction"
+          : item.kind === "agent"
+            ? "Agent"
+            : "Prompt";
     const link = `../${item.path}`;
 
     // Create install badges for each item
@@ -721,16 +791,16 @@ function generateCollectionReadme(collection, collectionId) {
       item.kind === "instruction"
         ? "instructions"
         : item.kind === "chat-mode"
-        ? "mode"
-        : item.kind === "agent"
-        ? "agent"
-        : "prompt"
+          ? "mode"
+          : item.kind === "agent"
+            ? "agent"
+            : "prompt"
     );
 
     const usageDescription = item.usage
       ? `${description} [see usage](#${title
-          .replace(/\s+/g, "-")
-          .toLowerCase()})`
+        .replace(/\s+/g, "-")
+        .toLowerCase()})`
       : description;
 
     // Generate MCP server column if collection has agents
@@ -747,7 +817,13 @@ function generateCollectionReadme(collection, collectionId) {
     // Generate Usage section for each collection
     if (item.usage && item.usage.trim()) {
       collectionUsageContent.push(
-        `### ${title}\n\n${item.usage.trim()}\n\n---\n\n`
+        `### ${title}
+
+${item.usage.trim()}
+
+---
+
+`
       );
     }
   }
@@ -767,9 +843,20 @@ function generateCollectionReadme(collection, collectionId) {
   return content;
 }
 
+// Note 7: Table Row Builder
+// This helper function encapsulates the logic for building individual table rows
+// in collection documentation. It handles the complexity of different content types
+// (prompts, chat modes, agents) and their specific requirements.
+//
+// Special handling:
+// - Agents: Include MCP server configuration and installation badges
+// - Links: Properly encode URLs for markdown
+// - Descriptions: Extract from frontmatter or fallback to defaults
+
 /**
  * Build a single markdown table row for a collection item.
- * Handles optional MCP server column when agents are present.
+ * Handles the complexity of different content types and their specific
+ * documentation needs, especially MCP server configuration for agents.
  */
 function buildCollectionRow({
   hasAgents,
@@ -791,6 +878,12 @@ function buildCollectionRow({
   }
   return `| [${title}](${link})<br />${badges} | ${typeDisplay} | ${usageDescription} |\n`;
 }
+
+// Note 8: Smart File Writer
+// This utility function prevents unnecessary file writes by comparing content
+// before writing. This is important because this script is often run as part
+// of automation, and we want to avoid triggering git changes when content
+// hasn't actually changed.
 
 // Utility: write file only if content changed
 function writeFileIfChanged(filePath, content) {
@@ -818,7 +911,11 @@ function buildCategoryReadme(sectionBuilder, dirPath, headerLine, usageLine) {
     return section.replace(/^##\s/m, "# ");
   }
   // Fallback content when no entries are found
-  return `${headerLine}\n\n${usageLine}\n\n_No entries found yet._`;
+  return `${headerLine}
+
+${usageLine}
+
+_No entries found yet._`;
 }
 
 // Main execution

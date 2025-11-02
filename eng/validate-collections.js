@@ -1,5 +1,15 @@
 #!/usr/bin/env node
 
+// Note 1: Collection Validator
+// This script validates collection manifests (.collection.yml files) to ensure
+// they meet the project's requirements. It checks:
+// - Basic metadata (ID, name, description, tags)
+// - Item references (existence, file types)
+// - Agent-specific requirements (MCP servers)
+// - Display settings
+//
+// The validator runs as part of CI/CD and can be run locally during development.
+
 const fs = require("fs");
 const path = require("path");
 const { parseCollectionYaml, parseFrontmatter } = require("./yaml-parser");
@@ -8,6 +18,14 @@ const {
   COLLECTIONS_DIR,
   MAX_COLLECTION_ITEMS,
 } = require("./constants");
+
+// Note 2: Field Validation Functions
+// Each validation function follows a consistent pattern:
+// 1. Check for required fields and correct types
+// 2. Validate content against specific rules
+// 3. Return null if valid, error message if invalid
+//
+// These functions are composed to validate entire collection manifests.
 
 // Validation functions
 function validateCollectionId(id) {
@@ -65,6 +83,17 @@ function validateCollectionTags(tags) {
   }
   return null;
 }
+
+// Note 3: Agent File Validation
+// Agents have special requirements because they interact with MCP servers.
+// This function validates:
+// - Required metadata (name, description)
+// - MCP server configurations
+// - Tool specifications
+// - Environment variables
+//
+// The validation is more complex than other content types because agents
+// need to be properly configured to work with their target MCP servers.
 
 function validateAgentFile(filePath) {
   try {
@@ -155,6 +184,15 @@ function validateAgentFile(filePath) {
   }
 }
 
+// Note 4: Collection Items Validation
+// This function checks that all items referenced in a collection:
+// 1. Actually exist in the filesystem
+// 2. Have the correct file extension for their kind
+// 3. Are within the maximum items limit
+// 4. Have valid agent configurations (for agent items)
+//
+// This validation ensures collections don't reference missing or invalid content.
+
 function validateCollectionItems(items) {
   if (!items || !Array.isArray(items)) {
     return "Items is required and must be an array";
@@ -178,9 +216,8 @@ function validateCollectionItems(items) {
       return `Item ${i + 1} must have a kind string`;
     }
     if (!["prompt", "instruction", "chat-mode", "agent"].includes(item.kind)) {
-      return `Item ${
-        i + 1
-      } kind must be one of: prompt, instruction, chat-mode, agent`;
+      return `Item ${i + 1
+        } kind must be one of: prompt, instruction, chat-mode, agent`;
     }
 
     // Validate file path exists
@@ -191,27 +228,23 @@ function validateCollectionItems(items) {
 
     // Validate path pattern matches kind
     if (item.kind === "prompt" && !item.path.endsWith(".prompt.md")) {
-      return `Item ${
-        i + 1
-      } kind is "prompt" but path doesn't end with .prompt.md`;
+      return `Item ${i + 1
+        } kind is "prompt" but path doesn't end with .prompt.md`;
     }
     if (
       item.kind === "instruction" &&
       !item.path.endsWith(".instructions.md")
     ) {
-      return `Item ${
-        i + 1
-      } kind is "instruction" but path doesn't end with .instructions.md`;
+      return `Item ${i + 1
+        } kind is "instruction" but path doesn't end with .instructions.md`;
     }
     if (item.kind === "chat-mode" && !item.path.endsWith(".chatmode.md")) {
-      return `Item ${
-        i + 1
-      } kind is "chat-mode" but path doesn't end with .chatmode.md`;
+      return `Item ${i + 1
+        } kind is "chat-mode" but path doesn't end with .chatmode.md`;
     }
     if (item.kind === "agent" && !item.path.endsWith(".agent.md")) {
-      return `Item ${
-        i + 1
-      } kind is "agent" but path doesn't end with .agent.md`;
+      return `Item ${i + 1
+        } kind is "agent" but path doesn't end with .agent.md`;
     }
 
     // Validate agent-specific frontmatter
@@ -224,6 +257,17 @@ function validateCollectionItems(items) {
   }
   return null;
 }
+
+// Note 5: Display Settings Validation
+// Collections can customize how they appear in documentation through
+// display settings. This function validates:
+// - Ordering preference (manual or alphabetical)
+// - Badge visibility
+//
+// The function includes special handling for YAML quirks like:
+// - Inline comments after values
+// - Quoted string values
+// - Case normalization
 
 function validateCollectionDisplay(display) {
   if (display && typeof display !== "object") {
@@ -296,6 +340,16 @@ function validateCollectionManifest(collection, filePath) {
 }
 
 // Main validation function
+// Note 6: Main Validation Process
+// This is the entry point for collection validation. It:
+// 1. Finds all .collection.yml files
+// 2. Parses each file and validates its contents
+// 3. Tracks used collection IDs to prevent duplicates
+// 4. Reports all errors found
+//
+// The process exits with code 1 if any validation fails,
+// making it suitable for use in CI/CD pipelines.
+
 function validateCollections() {
   if (!fs.existsSync(COLLECTIONS_DIR)) {
     console.log("No collections directory found - validation skipped");

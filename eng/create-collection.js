@@ -1,32 +1,57 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
-const readline = require("readline");
-const { COLLECTIONS_DIR } = require("./constants");
+// Note 1: Shebang line that enables this script to be run directly from the command line on Unix-like systems
+// Note 2: The script uses Node.js standard libraries for file operations and user interaction
 
+const fs = require("fs");         // Note 3: File System module for reading/writing files
+const path = require("path");     // Note 4: Path module for cross-platform file path handling
+const readline = require("readline"); // Note 5: Readline module for interactive command line input
+const { COLLECTIONS_DIR } = require("./constants"); // Note 6: Importing collection directory path from constants
+
+// Note 7: Create readline interface for handling user input/output
 const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
+  input: process.stdin,    // Note 8: Read from standard input (keyboard)
+  output: process.stdout,  // Note 9: Write to standard output (console)
 });
 
+/**
+ * Note 10: Helper function to create Promise-based user prompts
+ * This function wraps the callback-based readline.question in a Promise
+ * to enable use with async/await for cleaner code flow
+ *
+ * @param {string} question - Text to display as the prompt
+ * @returns {Promise<string>} Promise that resolves with user's input
+ */
 function prompt(question) {
+  // 将readline的回调接口包装成Promise接口
   return new Promise((resolve) => {
     rl.question(question, resolve);
   });
 }
 
+/**
+ * 解析命令行参数的函数
+ * 用于处理传入的命令行参数，提取出id和tags信息
+ * @returns {Object} 包含id和tags属性的对象
+ */
+// Note 11: Function to parse command line arguments for collection ID and tags
 function parseArgs() {
-  const args = process.argv.slice(2);
+  // Note 12: process.argv contains all command line arguments
+  // First two elements are: [node executable path, script path]
+  const args = process.argv.slice(2);  // Get just the user-provided arguments
+
+  // Note 13: Initialize return object with undefined values
+  // This allows us to track whether arguments were provided
   const out = { id: undefined, tags: undefined };
 
-  // simple long/short option parsing
+  // Note 14: Parse command line options in both long and short formats
+  // Supports: --id value, -i value, --id=value, and positional arguments
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
-    if (a === "--id" || a === "-i") {
+    if (a === "--id" || a === "-i") {  // Note 15: Handle space-separated options
       out.id = args[i + 1];
-      i++;
-    } else if (a.startsWith("--id=")) {
+      i++;  // Skip the next argument since we consumed it
+    } else if (a.startsWith("--id=")) { // Note 16: Handle equals-style options
       out.id = a.split("=")[1];
     } else if (a === "--tags" || a === "-t") {
       out.tags = args[i + 1];
@@ -50,16 +75,22 @@ function parseArgs() {
   return out;
 }
 
+// Note 17: Main function to create a new collection template
+// Uses async/await for clean handling of user prompts
 async function createCollectionTemplate() {
   try {
+    // Note 18: Display welcome message with emoji for better UX
     console.log("🎯 Collection Creator");
     console.log("This tool will help you create a new collection manifest.\n");
 
-    // Parse CLI args and fall back to interactive prompts when missing
+    // Note 19: Support both CLI arguments and interactive input
+    // This hybrid approach improves usability for both scripts and human users
     const parsed = parseArgs();
-    // Get collection ID
+
+    // Note 20: Get collection ID from CLI args or prompt user
     let collectionId = parsed.id;
     if (!collectionId) {
+      // Note 21: Use await with our Promise-based prompt function
       collectionId = await prompt("Collection ID (lowercase, hyphens only): ");
     }
 
@@ -121,6 +152,7 @@ async function createCollectionTemplate() {
     let tags = [];
     let tagInput = parsed.tags;
     if (!tagInput) {
+      21122121
       tagInput = await prompt(
         "Tags (comma-separated, or press Enter for defaults): "
       );
@@ -136,9 +168,15 @@ async function createCollectionTemplate() {
       // Generate some default tags from the collection ID
       tags = collectionId.split("-").slice(0, 3);
     }
-
-    // Template content
-    const template = `id: ${collectionId}
+    // Note 22: Generate YAML template for the collection
+    // Uses template literals for clean string interpolation
+    const template = `# Note 23: Collection manifest in YAML format
+# Fields:
+# - id: Unique identifier for the collection
+# - name: Display name
+# - description: Brief explanation of collection purpose
+# - tags: Keywords for categorization and search
+id: ${collectionId}
 name: ${collectionName}
 description: ${description}
 tags: [${tags.join(", ")}]
