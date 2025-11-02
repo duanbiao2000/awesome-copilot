@@ -1,0 +1,14 @@
+# Educational Note: Valid Collection Fixture
+# 
+# This is a properly formatted YAML collection file used for testing
+# the parseCollectionYaml function. It includes all required fields
+# and follows the expected structure for a collection.
+
+id: test-collection
+name: Test Collection
+description: A test collection for unit testing
+items:
+  - type: prompt
+    path: test.prompt.md
+  - type: instruction
+    path: test.instructions.md

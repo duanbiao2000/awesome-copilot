@@ -170,7 +170,7 @@ async function createCollectionTemplate() {
     }
     // Note 22: Generate YAML template for the collection
     // Uses template literals for clean string interpolation
-    const template = `# Note 23: Collection manifest in YAML format
+    const template = `# Note 23: Collection manifest in YAML formatDHO06OJF6CJK6
 # Fields:
 # - id: Unique identifier for the collection
 # - name: Display name

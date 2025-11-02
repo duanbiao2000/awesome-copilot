@@ -1,0 +1,7 @@
+# Educational Note: Invalid Collection Fixture
+# 
+# This is a YAML file with intentional syntax errors used for testing
+# error handling in parseCollectionYaml function. The invalid syntax
+# should trigger proper error handling and return null.
+
+invalid: yaml: content: [
