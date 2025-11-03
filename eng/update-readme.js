@@ -2,11 +2,15 @@
 
 // Note 1: Script purpose
 // This script generates README and category documentation files for the repository.
-// It scans the content directories (prompts, instructions, chatmodes, agents,
-// collections), extracts metadata (titles, descriptions, MCP server info), and
-// writes formatted Markdown tables into the `docs/` folder and individual
-// collection READMEs. Running this script keeps the documentation in sync with
-// the repository content.
+// It now acts as an entry point that delegates to the DocGenerator class.
+
+const DocGenerator = require('./doc-generator');
+
+// Main execution
+(async () => {
+  const generator = new DocGenerator();
+  await generator.generateAllDocs();
+})();
 
 // Note 2: Core Node.js modules used
 // - fs: file system operations (read/write/list)
