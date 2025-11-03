@@ -75,14 +75,16 @@ class DocGenerator {
   }
 
   /**
-   * Extract title from a file
-   * @param {string} filePath - Path to the file
-   * @returns {string} Extracted title
+   * 异步提取文件标题
+   * 使用带缓存的文件读取机制提高性能
+   * @param {string} filePath - 文件路径
+   * @returns {string} 提取的标题
    */
   async extractTitleAsync(filePath) {
     const { safeAsyncFileOperation } = require("./utils-async");
     return await safeAsyncFileOperation(
       async () => {
+        // 使用带缓存的文件读取，避免重复读取相同文件
         const content = await fileCache.readFileCached(filePath);
         const lines = content.split("\n");
 
@@ -184,15 +186,16 @@ class DocGenerator {
   }
 
   /**
-   * Extract description from a file
-   * @param {string} filePath - Path to the file
-   * @returns {string|null} Extracted description or null
+   * 异步提取文件描述
+   * 使用带缓存的文件读取机制提高性能
+   * @param {string} filePath - 文件路径
+   * @returns {string|null} 提取的描述或null
    */
   async extractDescriptionAsync(filePath) {
     const { safeAsyncFileOperation } = require("./utils-async");
     return await safeAsyncFileOperation(
       async () => {
-        // Use vfile-matter to parse frontmatter for all file types
+        // 使用带缓存的frontmatter解析，避免重复读取相同文件
         const frontmatter = await parseFrontmatterAsync(filePath);
 
         if (frontmatter && frontmatter.description) {
@@ -226,7 +229,8 @@ class DocGenerator {
   }
 
   /**
-   * Generate the instructions section with a table of all instructions
+   * 异步生成指令部分文档
+   * 使用异步文件操作和缓存机制提高性能
    */
   async generateInstructionsSectionAsync(instructionsDir = INSTRUCTIONS_DIR) {
     // Check if directory exists

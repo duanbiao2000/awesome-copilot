@@ -16,7 +16,7 @@ const { VFile } = require("vfile");
 const { matter } = require("vfile-matter");
 const { FileCache, safeAsyncFileOperation } = require("./utils-async");
 
-// Create a global file cache instance
+// 创建全局文件缓存实例，用于异步函数中的文件内容缓存
 const fileCache = new FileCache();
 
 // Note 2: Error Handling Wrapper
@@ -66,14 +66,15 @@ function parseCollectionYaml(filePath) {
 }
 
 /**
- * Parse a collection YAML file (.collection.yml) - async version
- * Collections are pure YAML files without frontmatter delimiters
- * @param {string} filePath - Path to the collection file
- * @returns {object|null} Parsed collection object or null on error
+ * 异步解析集合YAML文件 (.collection.yml)
+ * 使用文件缓存机制提高重复读取性能
+ * @param {string} filePath - 集合文件路径
+ * @returns {object|null} 解析后的集合对象，出错时返回null
  */
 async function parseCollectionYamlAsync(filePath) {
   return await safeAsyncFileOperation(
     async () => {
+      // 使用带缓存的文件读取，避免重复读取相同文件
       const content = await fileCache.readFileCached(filePath);
       // Collections are pure YAML files, parse directly with js-yaml
       return yaml.load(content, { schema: yaml.JSON_SCHEMA });
@@ -136,14 +137,15 @@ function parseFrontmatter(filePath) {
 }
 
 /**
- * Parse frontmatter from a markdown file using vfile-matter - async version
- * Works with any markdown file that has YAML frontmatter (agents, prompts, chatmodes, instructions)
- * @param {string} filePath - Path to the markdown file
- * @returns {object|null} Parsed frontmatter object or null on error
+ * 异步解析Markdown文件中的frontmatter
+ * 使用文件缓存机制提高重复读取性能
+ * @param {string} filePath - Markdown文件路径
+ * @returns {object|null} 解析后的frontmatter对象，出错时返回null
  */
 async function parseFrontmatterAsync(filePath) {
   return await safeAsyncFileOperation(
     async () => {
+      // 使用带缓存的文件读取，避免重复读取相同文件
       const content = await fileCache.readFileCached(filePath);
       const file = new VFile({ path: filePath, value: content });
 
@@ -211,9 +213,9 @@ function extractAgentMetadata(filePath) {
 }
 
 /**
- * Extract agent metadata including MCP server information - async version
- * @param {string} filePath - Path to the agent file
- * @returns {object|null} Agent metadata object with name, description, tools, and mcp-servers
+ * 异步提取代理元数据（包括MCP服务器信息）
+ * @param {string} filePath - 代理文件路径
+ * @returns {object|null} 代理元数据对象，出错时返回null
  */
 async function extractAgentMetadataAsync(filePath) {
   const frontmatter = await parseFrontmatterAsync(filePath);
@@ -249,9 +251,9 @@ function extractMcpServers(filePath) {
 }
 
 /**
- * Extract MCP server names from an agent file - async version
- * @param {string} filePath - Path to the agent file
- * @returns {string[]} Array of MCP server names
+ * 异步从代理文件中提取MCP服务器名称
+ * @param {string} filePath - 代理文件路径
+ * @returns {string[]} MCP服务器名称数组
  */
 async function extractMcpServersAsync(filePath) {
   const metadata = await extractAgentMetadataAsync(filePath);
@@ -289,8 +291,8 @@ function extractMcpServerConfigs(filePath) {
 }
 
 /**
- * Extract full MCP server configs from an agent file - async version
- * @param {string} filePath - Path to the agent file
+ * 异步从代理文件中提取完整的MCP服务器配置
+ * @param {string} filePath - 代理文件路径
  * @returns {Array<{name:string,type?:string,command?:string,args?:string[],url?:string,headers?:object}>}
  */
 async function extractMcpServerConfigsAsync(filePath) {
