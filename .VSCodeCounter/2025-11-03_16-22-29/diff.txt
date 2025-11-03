@@ -1,0 +1,76 @@
+Date : 2025-11-03 16:22:29
+Directory : d:\Mycodes\Gitrepos\awesome-copilot
+Total : 39 files,  3518 codes, 535 comments, 1266 blanks, all 5319 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Markdown   |         29 |      2,968 |         13 |      1,104 |      4,085 |
+| JavaScript |          8 |        541 |        512 |        158 |      1,211 |
+| YAML       |          2 |          9 |         10 |          4 |         23 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                       | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                          |         39 |      3,518 |        535 |      1,266 |      5,319 |
+| .github                                                                                                    |         15 |      1,946 |         13 |        688 |      2,647 |
+| .github (Files)                                                                                            |          1 |         16 |          0 |          8 |         24 |
+| .github\chatmodes                                                                                          |          8 |      1,271 |         12 |        445 |      1,728 |
+| .github\instructions                                                                                       |          5 |        564 |          1 |        200 |        765 |
+| .github\prompts                                                                                            |          1 |         95 |          0 |         35 |        130 |
+| docs                                                                                                       |         11 |        919 |          0 |        397 |      1,316 |
+| eng                                                                                                        |         13 |        653 |        522 |        181 |      1,356 |
+| eng (Files)                                                                                                |          6 |        216 |        469 |         80 |        765 |
+| eng\__tests__                                                                                              |          7 |        437 |         53 |        101 |        591 |
+| eng\__tests__ (Files)                                                                                      |          2 |        325 |         43 |         78 |        446 |
+| eng\__tests__\fixtures                                                                                     |          5 |        112 |         10 |         23 |        145 |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                   | language   | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\chatmodes\Ultimate-Transparent-Thinking-Beast-Mode.chatmode.md | Markdown   |        467 |          0 |        178 |        645 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\chatmodes\code-tour.chatmode.md                                | Markdown   |        176 |          0 |         30 |        206 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\chatmodes\gilfoyle.chatmode.md                                 | Markdown   |         46 |          0 |         21 |         67 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\chatmodes\plan.chatmode.md                                     | Markdown   |         89 |          0 |         26 |        115 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\chatmodes\planner.chatmode.md                                  | Markdown   |         12 |          0 |          3 |         15 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\chatmodes\task-planner.chatmode.md                             | Markdown   |        258 |          9 |        108 |        375 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\chatmodes\task-researcher.chatmode.md                          | Markdown   |        187 |          3 |         65 |        255 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\chatmodes\tech-debt-remediation-plan.chatmode.md               | Markdown   |         36 |          0 |         14 |         50 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\copilot-instructions.md                                        | Markdown   |         16 |          0 |          8 |         24 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\instructions\gilfoyle-code-review.instructions.md              | Markdown   |         76 |          1 |         38 |        115 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\instructions\instructions.instructions.md                      | Markdown   |        186 |          0 |         71 |        257 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\instructions\markdown.instructions.md                          | Markdown   |         41 |          0 |         12 |         53 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\instructions\memory-bank.instructions.md                       | Markdown   |        232 |          0 |         67 |        299 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\instructions\taming-copilot.instructions.md                    | Markdown   |         29 |          0 |         12 |         41 |
+| d:\Mycodes\Gitrepos\awesome-copilot\.github\prompts\add-educational-comments.prompt.md                     | Markdown   |         95 |          0 |         35 |        130 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\TOOLING.md                                                        | Markdown   |          1 |          0 |          1 |          2 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\UPDATE-README-review.md                                           | Markdown   |         33 |          0 |         15 |         48 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\code-optimization-guide.md                                        | Markdown   |         71 |          0 |         36 |        107 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\code-quality-improvements.md                                      | Markdown   |        127 |          0 |         59 |        186 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\code-review-findings.md                                           | Markdown   |         91 |          0 |         44 |        135 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\code-review-report.md                                             | Markdown   |         29 |          0 |         29 |         58 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\github-mcp-registry-review.md                                     | Markdown   |         54 |          0 |         29 |         83 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\performance-optimization.md                                       | Markdown   |        168 |          0 |         62 |        230 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\security-analysis.md                                              | Markdown   |        101 |          0 |         47 |        148 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\yaml-parser-optimization-guide.md                                 | Markdown   |        142 |          0 |         44 |        186 |
+| d:\Mycodes\Gitrepos\awesome-copilot\docs\yaml-parser-review.md                                             | Markdown   |        102 |          0 |         31 |        133 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\__tests__\fixtures\README.md                                       | Markdown   |         11 |          0 |          1 |         12 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\__tests__\fixtures\invalid-collection.yml                          | YAML       |          1 |          5 |          2 |          8 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\__tests__\fixtures\sample-agent.md                                 | Markdown   |         68 |          0 |         10 |         78 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\__tests__\fixtures\valid-collection.yml                            | YAML       |          8 |          5 |          2 |         15 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\__tests__\fixtures\valid-markdown.md                               | Markdown   |         24 |          0 |          8 |         32 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\__tests__\update-readme.test.js                                    | JavaScript |         90 |         14 |         17 |        121 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\__tests__\yaml-parser-optimized.test.js                            | JavaScript |        235 |         29 |         61 |        325 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\create-collection.js                                               | JavaScript |          7 |         29 |          2 |         38 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\optimized-section-generators.js                                    | JavaScript |         82 |         75 |         21 |        178 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\update-readme.js                                                   | JavaScript |         14 |         72 |         11 |         97 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\validate-collections.js                                            | JavaScript |         -5 |         53 |          6 |         54 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\yaml-parser-optimized.js                                           | JavaScript |        118 |        195 |         35 |        348 |
+| d:\Mycodes\Gitrepos\awesome-copilot\eng\yaml-parser.js                                                     | JavaScript |          0 |         45 |          5 |         50 |
+| Total                                                                                                      |            |      3,518 |        535 |      1,266 |      5,319 |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
