@@ -8,10 +8,14 @@
 const fs = require("fs");
 const path = require("path");
 const {
-  parseCollectionYaml,
-  extractMcpServerConfigs,
-  parseFrontmatter,
+  parseCollectionYamlAsync,
+  extractMcpServerConfigsAsync,
+  parseFrontmatterAsync,
+  fileCache
 } = require("./yaml-parser");
+const {
+  writeFileIfChangedAsync,
+} = require("./utils-async");
 const {
   TEMPLATES,
   AKA_INSTALL_URLS,
@@ -75,14 +79,15 @@ class DocGenerator {
    * @param {string} filePath - Path to the file
    * @returns {string} Extracted title
    */
-  extractTitle(filePath) {
-    return require("./utils").safeFileOperation(
-      () => {
-        const content = fs.readFileSync(filePath, "utf8");
+  async extractTitleAsync(filePath) {
+    const { safeAsyncFileOperation } = require("./utils-async");
+    return await safeAsyncFileOperation(
+      async () => {
+        const content = await fileCache.readFileCached(filePath);
         const lines = content.split("\n");
 
         // Step 1: Try to get title from frontmatter using vfile-matter
-        const frontmatter = parseFrontmatter(filePath);
+        const frontmatter = await parseFrontmatterAsync(filePath);
 
         if (frontmatter) {
           // Check for title field
@@ -183,11 +188,12 @@ class DocGenerator {
    * @param {string} filePath - Path to the file
    * @returns {string|null} Extracted description or null
    */
-  extractDescription(filePath) {
-    return require("./utils").safeFileOperation(
-      () => {
+  async extractDescriptionAsync(filePath) {
+    const { safeAsyncFileOperation } = require("./utils-async");
+    return await safeAsyncFileOperation(
+      async () => {
         // Use vfile-matter to parse frontmatter for all file types
-        const frontmatter = parseFrontmatter(filePath);
+        const frontmatter = await parseFrontmatterAsync(filePath);
 
         if (frontmatter && frontmatter.description) {
           return frontmatter.description;
@@ -222,7 +228,7 @@ class DocGenerator {
   /**
    * Generate the instructions section with a table of all instructions
    */
-  generateInstructionsSection(instructionsDir = INSTRUCTIONS_DIR) {
+  async generateInstructionsSectionAsync(instructionsDir = INSTRUCTIONS_DIR) {
     // Check if directory exists
     if (!fs.existsSync(instructionsDir)) {
       return "";
@@ -234,11 +240,12 @@ class DocGenerator {
       .filter((file) => file.endsWith(".instructions.md"));
 
     // Map instruction files to objects with title for sorting
-    const instructionEntries = instructionFiles.map((file) => {
+    const instructionEntries = [];
+    for (const file of instructionFiles) {
       const filePath = path.join(instructionsDir, file);
-      const title = this.extractTitle(filePath);
-      return { file, filePath, title };
-    });
+      const title = await this.extractTitleAsync(filePath);
+      instructionEntries.push({ file, filePath, title });
+    }
 
     // Sort by title alphabetically
     instructionEntries.sort((a, b) => a.title.localeCompare(b.title));
@@ -260,7 +267,7 @@ class DocGenerator {
       const link = encodeURI(`instructions/${file}`);
 
       // Check if there's a description in the frontmatter
-      const customDescription = this.extractDescription(filePath);
+      const customDescription = await this.extractDescriptionAsync(filePath);
 
       // Create badges for installation links
       const badges = this.makeBadges(link, "instructions");
@@ -281,7 +288,7 @@ class DocGenerator {
   /**
    * Generate the prompts section with a table of all prompts
    */
-  generatePromptsSection(promptsDir = PROMPTS_DIR) {
+  async generatePromptsSectionAsync(promptsDir = PROMPTS_DIR) {
     // Check if directory exists
     if (!fs.existsSync(promptsDir)) {
       return "";
@@ -293,11 +300,12 @@ class DocGenerator {
       .filter((file) => file.endsWith(".prompt.md"));
 
     // Map prompt files to objects with title for sorting
-    const promptEntries = promptFiles.map((file) => {
+    const promptEntries = [];
+    for (const file of promptFiles) {
       const filePath = path.join(promptsDir, file);
-      const title = this.extractTitle(filePath);
-      return { file, filePath, title };
-    });
+      const title = await this.extractTitleAsync(filePath);
+      promptEntries.push({ file, filePath, title });
+    }
 
     // Sort by title alphabetically
     promptEntries.sort((a, b) => a.title.localeCompare(b.title));
@@ -318,7 +326,7 @@ class DocGenerator {
       const link = encodeURI(`prompts/${file}`);
 
       // Check if there's a description in the frontmatter
-      const customDescription = this.extractDescription(filePath);
+      const customDescription = await this.extractDescriptionAsync(filePath);
 
       // Create badges for installation links
       const badges = this.makeBadges(link, "prompt");
@@ -412,8 +420,8 @@ class DocGenerator {
   /**
    * Generate the agents section with a table of all agents
    */
-  generateAgentsSection(agentsDir = AGENTS_DIR) {
-    return this.generateUnifiedModeSection({
+  async generateAgentsSectionAsync(agentsDir = AGENTS_DIR) {
+    return await this.generateUnifiedModeSectionAsync({
       dir: agentsDir,
       extension: ".agent.md",
       linkPrefix: "agents",
@@ -427,8 +435,8 @@ class DocGenerator {
   /**
    * Generate the chat modes section with a table of all chat modes
    */
-  generateChatModesSection(chatmodesDir = CHATMODES_DIR) {
-    return this.generateUnifiedModeSection({
+  async generateChatModesSectionAsync(chatmodesDir = CHATMODES_DIR) {
+    return await this.generateUnifiedModeSectionAsync({
       dir: chatmodesDir,
       extension: ".chatmode.md",
       linkPrefix: "chatmodes",
@@ -453,7 +461,7 @@ class DocGenerator {
    * @param {string} cfg.sectionTemplate - Markdown section header
    * @param {string} cfg.usageTemplate - Usage instructions template
    */
-  generateUnifiedModeSection(cfg) {
+  async generateUnifiedModeSectionAsync(cfg) {
     const {
       dir,
       extension,
@@ -471,10 +479,12 @@ class DocGenerator {
 
     const files = fs.readdirSync(dir).filter((f) => f.endsWith(extension));
 
-    const entries = files.map((file) => {
+    const entries = [];
+    for (const file of files) {
       const filePath = path.join(dir, file);
-      return { file, filePath, title: this.extractTitle(filePath) };
-    });
+      const title = await this.extractTitleAsync(filePath);
+      entries.push({ file, filePath, title });
+    }
 
     entries.sort((a, b) => a.title.localeCompare(b.title));
     console.log(
@@ -491,11 +501,11 @@ class DocGenerator {
 
     for (const { file, filePath, title } of entries) {
       const link = encodeURI(`${linkPrefix}/${file}`);
-      const description = this.extractDescription(filePath);
+      const description = await this.extractDescriptionAsync(filePath);
       const badges = this.makeBadges(link, badgeType);
       let mcpServerCell = "";
       if (includeMcpServers) {
-        const servers = extractMcpServerConfigs(filePath);
+        const servers = await extractMcpServerConfigsAsync(filePath);
         mcpServerCell = this.generateMcpServerLinks(servers);
       }
 
@@ -516,7 +526,7 @@ class DocGenerator {
    * Scans the collections directory for .collection.yml files and generates
    * a formatted table showing each collection's contents and metadata.
    */
-  generateCollectionsSection(collectionsDir = COLLECTIONS_DIR) {
+  async generateCollectionsSectionAsync(collectionsDir = COLLECTIONS_DIR) {
     // Check if collections directory exists, create it if it doesn't
     if (!fs.existsSync(collectionsDir)) {
       console.log("Collections directory does not exist, creating it...");
@@ -529,23 +539,22 @@ class DocGenerator {
       .filter((file) => file.endsWith(".collection.yml"));
 
     // Map collection files to objects with name for sorting
-    const collectionEntries = collectionFiles
-      .map((file) => {
-        const filePath = path.join(collectionsDir, file);
-        const collection = parseCollectionYaml(filePath);
+    const collectionEntries = [];
+    for (const file of collectionFiles) {
+      const filePath = path.join(collectionsDir, file);
+      const collection = await parseCollectionYamlAsync(filePath);
 
-        if (!collection) {
-          console.warn(`Failed to parse collection: ${file}`);
-          return null;
-        }
+      if (!collection) {
+        console.warn(`Failed to parse collection: ${file}`);
+        continue;
+      }
 
-        const collectionId =
-          collection.id || path.basename(file, ".collection.yml");
-        const name = collection.name || collectionId;
-        const isFeatured = collection.display?.featured === true;
-        return { file, filePath, collection, collectionId, name, isFeatured };
-      })
-      .filter((entry) => entry !== null); // Remove failed parses
+      const collectionId =
+        collection.id || path.basename(file, ".collection.yml");
+      const name = collection.name || collectionId;
+      const isFeatured = collection.display?.featured === true;
+      collectionEntries.push({ file, filePath, collection, collectionId, name, isFeatured });
+    }
 
     // Separate featured and regular collections
     const featuredCollections = collectionEntries.filter(
@@ -594,7 +603,7 @@ class DocGenerator {
   /**
    * Generate the featured collections section for the main README
    */
-  generateFeaturedCollectionsSection(collectionsDir = COLLECTIONS_DIR) {
+  async generateFeaturedCollectionsSectionAsync(collectionsDir = COLLECTIONS_DIR) {
     // Check if collections directory exists
     if (!fs.existsSync(collectionsDir)) {
       return "";
@@ -606,39 +615,43 @@ class DocGenerator {
       .filter((file) => file.endsWith(".collection.yml"));
 
     // Map collection files to objects with name for sorting, filter for featured
-    const featuredCollections = collectionFiles
-      .map((file) => {
-        const filePath = path.join(collectionsDir, file);
-        return require("./utils").safeFileOperation(
-          () => {
-            const collection = parseCollectionYaml(filePath);
-            if (!collection) return null;
+    const featuredCollections = [];
+    for (const file of collectionFiles) {
+      const filePath = path.join(collectionsDir, file);
+      const { safeAsyncFileOperation } = require("./utils-async");
+      const entry = await safeAsyncFileOperation(
+        async () => {
+          const collection = await parseCollectionYamlAsync(filePath);
+          if (!collection) return null;
 
-            // Only include collections with featured: true
-            if (!collection.display?.featured) return null;
+          // Only include collections with featured: true
+          if (!collection.display?.featured) return null;
 
-            const collectionId =
-              collection.id || path.basename(file, ".collection.yml");
-            const name = collection.name || collectionId;
-            const description = collection.description || "No description";
-            const tags = collection.tags ? collection.tags.join(", ") : "";
-            const itemCount = collection.items ? collection.items.length : 0;
+          const collectionId =
+            collection.id || path.basename(file, ".collection.yml");
+          const name = collection.name || collectionId;
+          const description = collection.description || "No description";
+          const tags = collection.tags ? collection.tags.join(", ") : "";
+          const itemCount = collection.items ? collection.items.length : 0;
 
-            return {
-              file,
-              collection,
-              collectionId,
-              name,
-              description,
-              tags,
-              itemCount,
-            };
-          },
-          filePath,
-          null
-        );
-      })
-      .filter((entry) => entry !== null); // Remove non-featured and failed parses
+          return {
+            file,
+            collection,
+            collectionId,
+            name,
+            description,
+            tags,
+            itemCount,
+          };
+        },
+        filePath,
+        null
+      );
+      
+      if (entry) {
+        featuredCollections.push(entry);
+      }
+    }
 
     // Sort by name alphabetically
     featuredCollections.sort((a, b) => a.name.localeCompare(b.name));
@@ -670,7 +683,7 @@ class DocGenerator {
    * Creates a detailed markdown document explaining the collection's
    * contents and how to use them.
    */
-  generateCollectionReadme(collection, collectionId) {
+  async generateCollectionReadmeAsync(collection, collectionId) {
     if (!collection || !collection.items) {
       return `# ${collectionId}\n\nCollection not found or invalid.`;
     }
@@ -707,17 +720,17 @@ ${description}
     // Sort items based on display.ordering setting
     const items = [...collection.items];
     if (collection.display?.ordering === "alpha") {
-      items.sort((a, b) => {
-        const titleA = this.extractTitle(path.join(ROOT_FOLDER, a.path));
-        const titleB = this.extractTitle(path.join(ROOT_FOLDER, b.path));
-        return titleA.localeCompare(titleB);
-      });
+      for (const item of items) {
+        const filePath = path.join(ROOT_FOLDER, item.path);
+        item._title = await this.extractTitleAsync(filePath);
+      }
+      items.sort((a, b) => a._title.localeCompare(b._title));
     }
 
     for (const item of items) {
       const filePath = path.join(ROOT_FOLDER, item.path);
-      const title = this.extractTitle(filePath);
-      const description = this.extractDescription(filePath) || "No description";
+      const title = item._title || await this.extractTitleAsync(filePath);
+      const description = await this.extractDescriptionAsync(filePath) || "No description";
 
       const typeDisplay =
         item.kind === "chat-mode"
@@ -748,7 +761,7 @@ ${description}
         : description;
 
       // Generate MCP server column if collection has agents
-      content += this.buildCollectionRow({
+      content += await this.buildCollectionRowAsync({
         hasAgents,
         title,
         link,
@@ -792,7 +805,7 @@ ${item.usage.trim()}
    * Handles the complexity of different content types and their specific
    * documentation needs, especially MCP server configuration for agents.
    */
-  buildCollectionRow({
+  async buildCollectionRowAsync({
     hasAgents,
     title,
     link,
@@ -805,7 +818,7 @@ ${item.usage.trim()}
     if (hasAgents) {
       // Only agents currently have MCP servers; future migration may extend to chat modes.
       const mcpServers =
-        kind === "agent" ? extractMcpServerConfigs(filePath) : [];
+        kind === "agent" ? await extractMcpServerConfigsAsync(filePath) : [];
       const mcpServerCell =
         mcpServers.length > 0 ? this.generateMcpServerLinks(mcpServers) : "";
       return `| [${title}](${link})<br />${badges} | ${typeDisplay} | ${usageDescription} | ${mcpServerCell} |\n`;
@@ -814,30 +827,10 @@ ${item.usage.trim()}
   }
 
   /**
-   * Utility: write file only if content changed
-   */
-  writeFileIfChanged(filePath, content) {
-    const exists = fs.existsSync(filePath);
-    if (exists) {
-      const original = fs.readFileSync(filePath, "utf8");
-      if (original === content) {
-        console.log(
-          `${path.basename(filePath)} is already up to date. No changes needed.`
-        );
-        return;
-      }
-    }
-    fs.writeFileSync(filePath, content);
-    console.log(
-      `${path.basename(filePath)} ${exists ? "updated" : "created"} successfully!`
-    );
-  }
-
-  /**
    * Build per-category README content using existing generators, upgrading headings to H1
    */
-  buildCategoryReadme(sectionBuilder, dirPath, headerLine, usageLine) {
-    const section = sectionBuilder(dirPath);
+  async buildCategoryReadmeAsync(sectionBuilder, dirPath, headerLine, usageLine) {
+    const section = await sectionBuilder(dirPath);
     if (section && section.trim()) {
       // Upgrade the first markdown heading level from ## to # for standalone README files
       return section.replace(/^##\s/m, "# ");
@@ -870,36 +863,36 @@ _No entries found yet._`;
         "# "
       );
 
-      const instructionsReadme = this.buildCategoryReadme(
-        this.generateInstructionsSection.bind(this),
+      const instructionsReadme = await this.buildCategoryReadmeAsync(
+        this.generateInstructionsSectionAsync.bind(this),
         INSTRUCTIONS_DIR,
         instructionsHeader,
         TEMPLATES.instructionsUsage
       );
-      const promptsReadme = this.buildCategoryReadme(
-        this.generatePromptsSection.bind(this),
+      const promptsReadme = await this.buildCategoryReadmeAsync(
+        this.generatePromptsSectionAsync.bind(this),
         PROMPTS_DIR,
         promptsHeader,
         TEMPLATES.promptsUsage
       );
-      const chatmodesReadme = this.buildCategoryReadme(
-        this.generateChatModesSection.bind(this),
+      const chatmodesReadme = await this.buildCategoryReadmeAsync(
+        this.generateChatModesSectionAsync.bind(this),
         CHATMODES_DIR,
         chatmodesHeader,
         TEMPLATES.chatmodesUsage
       );
 
       // Generate agents README
-      const agentsReadme = this.buildCategoryReadme(
-        this.generateAgentsSection.bind(this),
+      const agentsReadme = await this.buildCategoryReadmeAsync(
+        this.generateAgentsSectionAsync.bind(this),
         AGENTS_DIR,
         agentsHeader,
         TEMPLATES.agentsUsage
       );
 
       // Generate collections README
-      const collectionsReadme = this.buildCategoryReadme(
-        this.generateCollectionsSection.bind(this),
+      const collectionsReadme = await this.buildCategoryReadmeAsync(
+        this.generateCollectionsSectionAsync.bind(this),
         COLLECTIONS_DIR,
         collectionsHeader,
         TEMPLATES.collectionsUsage
@@ -911,17 +904,17 @@ _No entries found yet._`;
       }
 
       // Write category outputs into docs folder
-      this.writeFileIfChanged(
+      await writeFileIfChangedAsync(
         path.join(DOCS_DIR, "README.instructions.md"),
         instructionsReadme
       );
-      this.writeFileIfChanged(path.join(DOCS_DIR, "README.prompts.md"), promptsReadme);
-      this.writeFileIfChanged(
+      await writeFileIfChangedAsync(path.join(DOCS_DIR, "README.prompts.md"), promptsReadme);
+      await writeFileIfChangedAsync(
         path.join(DOCS_DIR, "README.chatmodes.md"),
         chatmodesReadme
       );
-      this.writeFileIfChanged(path.join(DOCS_DIR, "README.agents.md"), agentsReadme);
-      this.writeFileIfChanged(
+      await writeFileIfChangedAsync(path.join(DOCS_DIR, "README.agents.md"), agentsReadme);
+      await writeFileIfChangedAsync(
         path.join(DOCS_DIR, "README.collections.md"),
         collectionsReadme
       );
@@ -936,24 +929,24 @@ _No entries found yet._`;
 
         for (const file of collectionFiles) {
           const filePath = path.join(COLLECTIONS_DIR, file);
-          const collection = parseCollectionYaml(filePath);
+          const collection = await parseCollectionYamlAsync(filePath);
 
           if (collection) {
             const collectionId =
               collection.id || path.basename(file, ".collection.yml");
-            const readmeContent = this.generateCollectionReadme(
+            const readmeContent = await this.generateCollectionReadmeAsync(
               collection,
               collectionId
             );
             const readmeFile = path.join(COLLECTIONS_DIR, `${collectionId}.md`);
-            this.writeFileIfChanged(readmeFile, readmeContent);
+            await writeFileIfChangedAsync(readmeFile, readmeContent);
           }
         }
       }
 
       // Generate featured collections section and update main README.md
       console.log("Updating main README.md with featured collections...");
-      const featuredSection = this.generateFeaturedCollectionsSection(COLLECTIONS_DIR);
+      const featuredSection = await this.generateFeaturedCollectionsSectionAsync(COLLECTIONS_DIR);
 
       if (featuredSection) {
         const mainReadmePath = path.join(ROOT_FOLDER, "README.md");
@@ -988,13 +981,20 @@ _No entries found yet._`;
             }
           }
 
-          this.writeFileIfChanged(mainReadmePath, readmeContent);
+          await writeFileIfChangedAsync(mainReadmePath, readmeContent);
           console.log("Main README.md updated with featured collections");
         } else {
           console.warn("README.md not found, skipping featured collections update");
         }
       } else {
         console.log("No featured collections found to add to README.md");
+      }
+      
+      // Print cache statistics
+      const stats = fileCache.getStats();
+      console.log("File cache statistics:");
+      for (const [filePath, stat] of Object.entries(stats)) {
+        console.log(`  ${filePath}: ${stat.reads} reads, ${stat.hits} hits, ${stat.hitRate.toFixed(2)}% hit rate`);
       }
     } catch (error) {
       console.error(`Error generating category README files: ${error.message}`);
