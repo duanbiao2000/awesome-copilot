@@ -43,17 +43,17 @@ function safeFileOperation(operation, filePath, defaultValue = null) {
  * Collections are pure YAML files without frontmatter delimiters
  * @param {string} filePath - Path to the collection file
  * @returns {object|null} Parsed collection object or null on error
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
-// Note 3: Collection YAML Parser
-// Collections use pure YAML files (no frontmatter) to define:
-// - Collection metadata (id, name, description)
-// - Included items and their types
-// - Display preferences
-//
-// The function uses js-yaml with JSON_SCHEMA for stricter parsing,
-// which helps catch common YAML syntax errors early.
-
 function parseCollectionYaml(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return null;
+  }
+  
   return safeFileOperation(
     () => {
       const content = fs.readFileSync(filePath, "utf8");
@@ -69,9 +69,18 @@ function parseCollectionYaml(filePath) {
  * 异步解析集合YAML文件 (.collection.yml)
  * 使用文件缓存机制提高重复读取性能
  * @param {string} filePath - 集合文件路径
- * @returns {object|null} 解析后的集合对象，出错时返回null
+ * @returns {Promise<object|null>} 解析后的集合对象，出错时返回null
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
 async function parseCollectionYamlAsync(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return null;
+  }
+  
   return await safeAsyncFileOperation(
     async () => {
       // 使用带缓存的文件读取，避免重复读取相同文件
@@ -89,18 +98,17 @@ async function parseCollectionYamlAsync(filePath) {
  * Works with any markdown file that has YAML frontmatter (agents, prompts, chatmodes, instructions)
  * @param {string} filePath - Path to the markdown file
  * @returns {object|null} Parsed frontmatter object or null on error
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
-// Note 4: Frontmatter Parser
-// Most content files (agents, prompts, chatmodes, instructions) use markdown
-// with YAML frontmatter for metadata. This function:
-// 1. Reads the file content
-// 2. Uses vfile-matter to extract frontmatter
-// 3. Normalizes string fields (trimming whitespace, newlines)
-//
-// The normalization step is important because YAML multiline strings can
-// accumulate trailing whitespace that affects string comparisons.
-
 function parseFrontmatter(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return null;
+  }
+  
   return safeFileOperation(
     () => {
       const content = fs.readFileSync(filePath, "utf8");
@@ -140,9 +148,18 @@ function parseFrontmatter(filePath) {
  * 异步解析Markdown文件中的frontmatter
  * 使用文件缓存机制提高重复读取性能
  * @param {string} filePath - Markdown文件路径
- * @returns {object|null} 解析后的frontmatter对象，出错时返回null
+ * @returns {Promise<object|null>} 解析后的frontmatter对象，出错时返回null
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
 async function parseFrontmatterAsync(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return null;
+  }
+  
   return await safeAsyncFileOperation(
     async () => {
       // 使用带缓存的文件读取，避免重复读取相同文件
@@ -183,18 +200,17 @@ async function parseFrontmatterAsync(filePath) {
  * Extract agent metadata including MCP server information
  * @param {string} filePath - Path to the agent file
  * @returns {object|null} Agent metadata object with name, description, tools, and mcp-servers
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
-// Note 5: Agent Metadata Extractor
-// Agents have special metadata requirements for MCP server integration.
-// This function extracts and validates:
-// - Basic metadata (name, description)
-// - Tool configurations
-// - MCP server settings
-//
-// The extracted metadata is used by the validator to ensure agents
-// are properly configured for their target MCP servers.
-
 function extractAgentMetadata(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return null;
+  }
+  
   const frontmatter = parseFrontmatter(filePath);
 
   if (!frontmatter) {
@@ -215,9 +231,18 @@ function extractAgentMetadata(filePath) {
 /**
  * 异步提取代理元数据（包括MCP服务器信息）
  * @param {string} filePath - 代理文件路径
- * @returns {object|null} 代理元数据对象，出错时返回null
+ * @returns {Promise<object|null>} 代理元数据对象，出错时返回null
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
 async function extractAgentMetadataAsync(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return null;
+  }
+  
   const frontmatter = await parseFrontmatterAsync(filePath);
 
   if (!frontmatter) {
@@ -239,8 +264,17 @@ async function extractAgentMetadataAsync(filePath) {
  * Extract MCP server names from an agent file
  * @param {string} filePath - Path to the agent file
  * @returns {string[]} Array of MCP server names
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
 function extractMcpServers(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return [];
+  }
+  
   const metadata = extractAgentMetadata(filePath);
 
   if (!metadata || !metadata.mcpServers) {
@@ -253,9 +287,18 @@ function extractMcpServers(filePath) {
 /**
  * 异步从代理文件中提取MCP服务器名称
  * @param {string} filePath - 代理文件路径
- * @returns {string[]} MCP服务器名称数组
+ * @returns {Promise<string[]>} MCP服务器名称数组
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
 async function extractMcpServersAsync(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return [];
+  }
+  
   const metadata = await extractAgentMetadataAsync(filePath);
 
   if (!metadata || !metadata.mcpServers) {
@@ -269,8 +312,17 @@ async function extractMcpServersAsync(filePath) {
  * Extract full MCP server configs from an agent file
  * @param {string} filePath - Path to the agent file
  * @returns {Array<{name:string,type?:string,command?:string,args?:string[],url?:string,headers?:object}>}
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
 function extractMcpServerConfigs(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return [];
+  }
+  
   const metadata = extractAgentMetadata(filePath);
   if (!metadata || !metadata.mcpServers) return [];
   return Object.entries(metadata.mcpServers).map(([name, cfg]) => {
@@ -293,9 +345,18 @@ function extractMcpServerConfigs(filePath) {
 /**
  * 异步从代理文件中提取完整的MCP服务器配置
  * @param {string} filePath - 代理文件路径
- * @returns {Array<{name:string,type?:string,command?:string,args?:string[],url?:string,headers?:object}>}
+ * @returns {Promise<Array<{name:string,type?:string,command?:string,args?:string[],url?:string,headers?:object}>>}
+ * 
+ * 增强类型验证：
+ * 1. 验证filePath是否为字符串
  */
 async function extractMcpServerConfigsAsync(filePath) {
+  // 类型验证
+  if (typeof filePath !== 'string') {
+    console.error(`Invalid filePath: expected string, got ${typeof filePath}`);
+    return [];
+  }
+  
   const metadata = await extractAgentMetadataAsync(filePath);
   if (!metadata || !metadata.mcpServers) return [];
   return Object.entries(metadata.mcpServers).map(([name, cfg]) => {
