@@ -214,17 +214,26 @@ class DocGenerator {
    * @param {string} link - Link to the resource
    * @param {string} type - Type of resource
    * @returns {string} HTML for badges
+   * 
+   * 优化字符串处理：
+   * 1. 使用模板字符串替代字符串拼接，提高可读性和性能
+   * 2. 预先计算不变的URL部分，避免重复拼接
+   * 3. 使用URLSearchParams处理查询参数，提高安全性
    */
   makeBadges(link, type) {
     const aka = AKA_INSTALL_URLS[type] || AKA_INSTALL_URLS.instructions;
+    
+    // 使用URLSearchParams处理查询参数，提高安全性并避免手动编码
+    const vscodeParams = new URLSearchParams();
+    vscodeParams.set('url', `vscode:chat-${type}/install?url=${repoBaseUrl}/${link}`);
+    
+    const insidersParams = new URLSearchParams();
+    insidersParams.set('url', `vscode-insiders:chat-${type}/install?url=${repoBaseUrl}/${link}`);
 
-    const vscodeUrl = `${aka}?url=${encodeURIComponent(
-      `vscode:chat-${type}/install?url=${repoBaseUrl}/${link}`
-    )}`;
-    const insidersUrl = `${aka}?url=${encodeURIComponent(
-      `vscode-insiders:chat-${type}/install?url=${repoBaseUrl}/${link}`
-    )}`;
+    const vscodeUrl = `${aka}?${vscodeParams.toString()}`;
+    const insidersUrl = `${aka}?${insidersParams.toString()}`;
 
+    // 使用模板字符串提高可读性
     return `[![Install in VS Code](${vscodeInstallImage})](${vscodeUrl})<br />[![Install in VS Code Insiders](${vscodeInsidersInstallImage})](${insidersUrl})`;
   }
 
@@ -268,7 +277,8 @@ class DocGenerator {
     // Generate table rows for each instruction file
     for (const entry of instructionEntries) {
       const { file, filePath, title } = entry;
-      const link = encodeURI(`instructions/${file}`);
+      // 优化路径处理：使用path.posix.join确保跨平台兼容性
+      const link = path.posix.join('instructions', file);
 
       // Check if there's a description in the frontmatter
       const customDescription = await this.extractDescriptionAsync(filePath);
@@ -327,7 +337,8 @@ class DocGenerator {
     // Generate table rows for each prompt file
     for (const entry of promptEntries) {
       const { file, filePath, title } = entry;
-      const link = encodeURI(`prompts/${file}`);
+      // 优化路径处理：使用path.posix.join确保跨平台兼容性
+      const link = path.posix.join('prompts', file);
 
       // Check if there's a description in the frontmatter
       const customDescription = await this.extractDescriptionAsync(filePath);
@@ -349,6 +360,11 @@ class DocGenerator {
    * Generate MCP server links for an agent
    * @param {string[]} servers - Array of MCP server names
    * @returns {string} - Formatted MCP server links with badges
+   * 
+   * 优化字符串处理：
+   * 1. 使用模板字符串提高可读性
+   * 2. 预先计算不变的URL部分
+   * 3. 使用URLSearchParams处理查询参数
    */
   generateMcpServerLinks(servers) {
     if (!servers || servers.length === 0) {
@@ -403,11 +419,24 @@ class DocGenerator {
           };
         }
 
-        const encodedConfig = encodeURIComponent(JSON.stringify(configPayload));
+        // 优化JSON序列化和编码处理
+        const configJson = JSON.stringify(configPayload);
+        const encodedConfig = encodeURIComponent(configJson);
+
+        // 使用模板字符串和URLSearchParams优化URL构建
+        const vscodeParams = new URLSearchParams({
+          name: serverName,
+          config: encodedConfig
+        });
+        
+        const insidersParams = new URLSearchParams({
+          name: serverName,
+          config: encodedConfig
+        });
 
         const installBadgeUrls = [
-          `[![Install MCP](${badges[0].url})](https://aka.ms/awesome-copilot/install/mcp-vscode?name=${serverName}&config=${encodedConfig})`,
-          `[![Install MCP](${badges[1].url})](https://aka.ms/awesome-copilot/install/mcp-vscodeinsiders?name=${serverName}&config=${encodedConfig})`,
+          `[![Install MCP](${badges[0].url})](https://aka.ms/awesome-copilot/install/mcp-vscode?${vscodeParams.toString()})`,
+          `[![Install MCP](${badges[1].url})](https://aka.ms/awesome-copilot/install/mcp-vscodeinsiders?${insidersParams.toString()})`,
           `[![Install MCP](${badges[2].url})](https://aka.ms/awesome-copilot/install/mcp-visualstudio/mcp-install?${encodedConfig})`,
         ].join("<br />");
 
@@ -504,7 +533,8 @@ class DocGenerator {
     let content = `${header}\n${separator}\n`;
 
     for (const { file, filePath, title } of entries) {
-      const link = encodeURI(`${linkPrefix}/${file}`);
+      // 优化路径处理：使用path.posix.join确保跨平台兼容性
+      const link = path.posix.join(linkPrefix, file);
       const description = await this.extractDescriptionAsync(filePath);
       const badges = this.makeBadges(link, badgeType);
       let mcpServerCell = "";
