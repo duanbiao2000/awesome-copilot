@@ -1,0 +1,92 @@
+{
+  "recentFiles": [
+    {
+      "basename": "plan.chatmode",
+      "path": "chatmodes/plan.chatmode.md"
+    },
+    {
+      "basename": "ms-sql-dba.chatmode",
+      "path": "chatmodes/ms-sql-dba.chatmode.md"
+    },
+    {
+      "basename": "drupal-expert.chatmode",
+      "path": "chatmodes/drupal-expert.chatmode.md"
+    },
+    {
+      "basename": "demonstrate-understanding.chatmode 1",
+      "path": "优选/demonstrate-understanding.chatmode 1.md"
+    },
+    {
+      "basename": "demonstrate-understanding.chatmode",
+      "path": "chatmodes/demonstrate-understanding.chatmode.md"
+    },
+    {
+      "basename": "declarative-agents-architect.chatmode",
+      "path": "chatmodes/declarative-agents-architect.chatmode.md"
+    },
+    {
+      "basename": "debug.chatmode",
+      "path": "chatmodes/debug.chatmode.md"
+    },
+    {
+      "basename": "gilfoyle.chatmode 1",
+      "path": "优选/gilfoyle.chatmode 1.md"
+    },
+    {
+      "basename": "gilfoyle.chatmode",
+      "path": "chatmodes/gilfoyle.chatmode.md"
+    },
+    {
+      "basename": "principal-software-engineer.chatmode",
+      "path": "chatmodes/principal-software-engineer.chatmode.md"
+    },
+    {
+      "basename": "bicep-plan.chatmode",
+      "path": "chatmodes/bicep-plan.chatmode.md"
+    },
+    {
+      "basename": "api-architect.chatmode",
+      "path": "chatmodes/api-architect.chatmode.md"
+    },
+    {
+      "basename": "address-comments.chatmode",
+      "path": "chatmodes/address-comments.chatmode.md"
+    },
+    {
+      "basename": "accessibility.chatmode",
+      "path": "chatmodes/accessibility.chatmode.md"
+    },
+    {
+      "basename": "4.1-Beast.chatmode",
+      "path": "chatmodes/4.1-Beast.chatmode.md"
+    },
+    {
+      "basename": "critical-thinking.chatmode 1",
+      "path": "优选/critical-thinking.chatmode 1.md"
+    },
+    {
+      "basename": "critical-thinking.chatmode",
+      "path": "chatmodes/critical-thinking.chatmode.md"
+    },
+    {
+      "basename": "dynatrace-expert.agent",
+      "path": "agents/dynatrace-expert.agent.md"
+    },
+    {
+      "basename": "CSharpExpert.agent",
+      "path": "agents/CSharpExpert.agent.md"
+    },
+    {
+      "basename": "arm-migration.agent",
+      "path": "agents/arm-migration.agent.md"
+    },
+    {
+      "basename": "amplitude-experiment-implementation.agent",
+      "path": "agents/amplitude-experiment-implementation.agent.md"
+    }
+  ],
+  "omittedPaths": [],
+  "omittedTags": [],
+  "updateOn": "file-open",
+  "omitBookmarks": false
+}
