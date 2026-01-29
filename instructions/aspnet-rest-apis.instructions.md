@@ -6,6 +6,7 @@ applyTo: '**/*.cs, **/*.json'
 # ASP.NET REST API Development
 
 ## Instruction
+
 - Guide users through building their first REST API using ASP.NET Core 9.
 - Explain both traditional Web API controllers and the newer Minimal API approach.
 - Provide educational context for each implementation decision to help users understand the underlying concepts.

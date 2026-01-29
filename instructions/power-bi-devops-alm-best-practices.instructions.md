@@ -6,11 +6,13 @@ applyTo: '**/*.{yml,yaml,ps1,json,pbix,pbir}'
 # Power BI DevOps and Application Lifecycle Management Best Practices
 
 ## Overview
+
 This document provides comprehensive instructions for implementing DevOps practices, CI/CD pipelines, and Application Lifecycle Management (ALM) for Power BI solutions, based on Microsoft's recommended patterns and best practices.
 
 ## Power BI Project Structure and Version Control
 
 ### 1. PBIP (Power BI Project) Structure
+
 ```markdown
 // Power BI project file organization
 ├── Model/
@@ -34,6 +36,7 @@ This document provides comprehensive instructions for implementing DevOps practi
 ```
 
 ### 2. Git Integration Best Practices
+
 ```powershell
 # Initialize Power BI project with Git
 git init
@@ -54,6 +57,7 @@ git tag -a v1.2.0 -m "Release version 1.2.0"
 ## Deployment Pipelines and Automation
 
 ### 1. Power BI Deployment Pipelines API
+
 ```powershell
 # Automated deployment using Power BI REST API
 $url = "pipelines/{0}/Deploy" -f "Insert your pipeline ID here"
@@ -92,6 +96,7 @@ while($operation.Status -eq "NotStarted" -or $operation.Status -eq "Executing")
 ```
 
 ### 2. Azure DevOps Integration
+
 ```yaml
 # Azure DevOps pipeline for Power BI deployment
 trigger:
@@ -149,6 +154,7 @@ steps:
 ```
 
 ### 3. Fabric REST API Deployment
+
 ```powershell
 # Complete PowerShell deployment script
 # Parameters 
@@ -186,6 +192,7 @@ $reportImport = Import-FabricItem -workspaceId $workspaceId -path $pbipReportPat
 ## Environment Management
 
 ### 1. Multi-Environment Strategy
+
 ```json
 {
   "environments": {
@@ -212,6 +219,7 @@ $reportImport = Import-FabricItem -workspaceId $workspaceId -path $pbipReportPat
 ```
 
 ### 2. Parameter-Driven Deployment
+
 ```powershell
 # Environment-specific parameter management
 param(
@@ -242,6 +250,7 @@ Write-Host "Data Source: $($config.dataSourceUrl)"
 ## Automated Testing Framework
 
 ### 1. Data Quality Tests
+
 ```powershell
 # Automated data quality validation
 function Test-PowerBIDataQuality {
@@ -283,6 +292,7 @@ function Test-PowerBIDataQuality {
 ```
 
 ### 2. Performance Regression Tests
+
 ```powershell
 # Performance benchmark testing
 function Test-PowerBIPerformance {
@@ -326,6 +336,7 @@ function Test-PowerBIPerformance {
 ## Configuration Management
 
 ### 1. Infrastructure as Code
+
 ```json
 {
   "workspace": {
@@ -367,6 +378,7 @@ function Test-PowerBIPerformance {
 ```
 
 ### 2. Secret Management
+
 ```powershell
 # Azure Key Vault integration for secrets
 function Get-PowerBICredentials {
@@ -397,6 +409,7 @@ Connect-PowerBIServiceAccount -ServicePrincipal -Credential $credential -TenantI
 ## Release Management
 
 ### 1. Release Pipeline
+
 ```yaml
 # Multi-stage release pipeline
 stages:
@@ -459,6 +472,7 @@ stages:
 ```
 
 ### 2. Rollback Strategy
+
 ```powershell
 # Automated rollback mechanism
 function Invoke-PowerBIRollback {
@@ -491,6 +505,7 @@ function Invoke-PowerBIRollback {
 ## Monitoring and Alerting
 
 ### 1. Deployment Health Checks
+
 ```powershell
 # Post-deployment validation
 function Test-DeploymentHealth {
@@ -533,6 +548,7 @@ function Test-DeploymentHealth {
 ```
 
 ### 2. Automated Alerting
+
 ```powershell
 # Teams notification for deployment status
 function Send-DeploymentNotification {

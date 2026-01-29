@@ -100,6 +100,7 @@ impl ServerHandler for MyHandler {
 Assist with different transport setups:
 
 **Stdio (for CLI integration):**
+
 ```rust
 use rmcp::transport::StdioTransport;
 
@@ -111,6 +112,7 @@ server.run(signal::ctrl_c()).await?;
 ```
 
 **SSE (Server-Sent Events):**
+
 ```rust
 use rmcp::transport::SseServerTransport;
 use std::net::SocketAddr;
@@ -124,6 +126,7 @@ server.run(signal::ctrl_c()).await?;
 ```
 
 **HTTP with Axum:**
+
 ```rust
 use rmcp::transport::StreamableHttpTransport;
 use axum::{Router, routing::post};
@@ -371,6 +374,7 @@ Advise on performance:
    - Consider `DashMap` for concurrent hash maps
 
 2. **Minimize lock duration:**
+
    ```rust
    // Good: Clone data out of lock
    let value = {
@@ -385,12 +389,14 @@ Advise on performance:
    ```
 
 3. **Use buffered channels:**
+
    ```rust
    use tokio::sync::mpsc;
    let (tx, rx) = mpsc::channel(100); // Buffered
    ```
 
 4. **Batch operations:**
+
    ```rust
    async fn batch_process(&self, items: Vec<Item>) -> Vec<Result<(), Error>> {
        use futures::future::join_all;

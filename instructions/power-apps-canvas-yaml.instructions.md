@@ -6,14 +6,17 @@ applyTo: '**/*.{yaml,yml,md,pa.yaml}'
 # Power Apps Canvas Apps YAML Structure Guide
 
 ## Overview
+
 This document provides comprehensive instructions for working with YAML code for Power Apps canvas apps based on the official Microsoft Power Apps YAML schema (v3.0) and Power Fx documentation.
 
-**Official Schema Source**: https://raw.githubusercontent.com/microsoft/PowerApps-Tooling/refs/heads/master/schemas/pa-yaml/v3.0/pa.schema.yaml
+**Official Schema Source**: <https://raw.githubusercontent.com/microsoft/PowerApps-Tooling/refs/heads/master/schemas/pa-yaml/v3.0/pa.schema.yaml>
 
 ## Power Fx Design Principles
+
 Power Fx is the formula language used throughout Power Apps canvas apps. It follows these core principles:
 
 ### Design Principles
+
 - **Simple**: Uses familiar concepts from Excel formulas
 - **Excel Consistency**: Aligns with Excel formula syntax and behavior
 - **Declarative**: Describes what you want, not how to achieve it
@@ -23,13 +26,16 @@ Power Fx is the formula language used throughout Power Apps canvas apps. It foll
 - **Integrated**: Works seamlessly across the Power Platform
 
 ### Language Philosophy
+
 Power Fx promotes:
+
 - Low-code development through familiar Excel-like formulas
 - Automatic recalculation when dependencies change
 - Type safety with compile-time checking
 - Functional programming patterns
 
 ## Root Structure
+
 Every Power Apps YAML file follows this top-level structure:
 
 ```yaml
@@ -52,6 +58,7 @@ EditorState:
 ```
 
 ## 1. App Section
+
 The `App` section defines application-level properties and configuration.
 
 ```yaml
@@ -62,12 +69,14 @@ App:
     # Other app properties with Power Fx formulas
 ```
 
-### Key Points:
+### Key Points
+
 - Contains application-wide settings
 - Properties use Power Fx formulas (prefixed with `=`)
 - `StartScreen` property is commonly specified
 
 ## 2. Screens Section
+
 Defines all screens in the application as an unordered map.
 
 ```yaml
@@ -90,11 +99,13 @@ Screens:
             Y: =100
 ```
 
-### Screen Structure:
+### Screen Structure
+
 - **Properties**: Screen-level properties and formulas
 - **Children**: Array of controls on the screen (ordered by z-index)
 
-### Control Definition Format:
+### Control Definition Format
+
 ```yaml
 ControlName:
   Control: ControlType      # Required: Control type identifier
@@ -109,8 +120,10 @@ ControlName:
   Children: []              # For container controls (ordered by z-index)
 ```
 
-### Control Versioning:
+### Control Versioning
+
 You can specify control versions using the `@` operator:
+
 ```yaml
 MyButton:
   Control: Button@2.1.0     # Specific version
@@ -126,7 +139,9 @@ MyLabel:
 ## 3. Control Types
 
 ### Standard Controls
+
 Common first-party controls include:
+
 - **Basic Controls**: `Label`, `Button`, `TextInput`, `HTMLText`
 - **Input Controls**: `Slider`, `Toggle`, `Checkbox`, `Radio`, `Dropdown`, `Combobox`, `DatePicker`, `ListBox`
 - **Display Controls**: `Image`, `Icon`, `Video`, `Audio`, `PDF viewer`, `Barcode scanner`
@@ -135,7 +150,9 @@ Common first-party controls include:
 - **Advanced Controls**: `Timer`, `Camera`, `Microphone`, `Add picture`, `Import`, `Export`
 
 ### Container and Layout Controls
+
 Special attention for container controls and their children:
+
 ```yaml
 MyContainer:
   Control: Container
@@ -159,6 +176,7 @@ MyContainer:
 ```
 
 ### Custom Components
+
 ```yaml
 MyCustomControl:
   Control: Component
@@ -170,6 +188,7 @@ MyCustomControl:
 ```
 
 ### Code Components (PCF)
+
 ```yaml
 MyPCFControl:
   Control: CodeComponent
@@ -180,6 +199,7 @@ MyPCFControl:
 ```
 
 ## 4. Component Definitions
+
 Define reusable custom components:
 
 ```yaml
@@ -210,7 +230,8 @@ ComponentDefinitions:
             Text: =Parent.InputText
 ```
 
-### Custom Property Types:
+### Custom Property Types
+
 - **Input**: Receives values from parent
 - **Output**: Sends values to parent
 - **InputFunction**: Function called by parent
@@ -218,13 +239,15 @@ ComponentDefinitions:
 - **Event**: Triggers events to parent
 - **Action**: Function with side effects
 
-### Data Types:
+### Data Types
+
 - `Text`, `Number`, `Boolean`
 - `DateAndTime`, `Color`, `Currency`
 - `Record`, `Table`, `Image`
 - `VideoOrAudio`, `Screen`
 
 ## 5. Data Sources
+
 Configure data connections:
 
 ```yaml
@@ -241,11 +264,13 @@ DataSources:
       # Additional connector parameters
 ```
 
-### Data Source Types:
+### Data Source Types
+
 - **Table**: Dataverse tables or other tabular data
 - **Actions**: Connector actions and flows
 
 ## 6. Editor State
+
 Maintains editor organization:
 
 ```yaml
@@ -261,11 +286,13 @@ EditorState:
 
 ## Power Fx Formula Guidelines
 
-### Formula Syntax:
+### Formula Syntax
+
 - All formulas must start with `=`
 - Use Power Fx syntax for expressions
 - Null values can be represented as `null` (without quotes)
 - Examples:
+
   ```yaml
   Text: ="Hello World"
   X: =10
@@ -274,7 +301,8 @@ EditorState:
   OptionalProperty: null    # Represents no value
   ```
 
-### Common Formula Patterns:
+### Common Formula Patterns
+
 ```yaml
 # Static values
 Text: ="Static Text"
@@ -302,7 +330,8 @@ Items: =Filter(DataSource, Status = "Active")
 Text: =LookUp(Users, ID = 123).Name
 ```
 
-### Z-Index and Control Ordering:
+### Z-Index and Control Ordering
+
 - Controls in the `Children` array are ordered by z-index
 - First control in array = bottom layer (z-index 1)
 - Last control in array = top layer (highest z-index)
@@ -310,73 +339,86 @@ Text: =LookUp(Users, ID = 123).Name
 
 ## Naming Conventions
 
-### Entity Names:
+### Entity Names
+
 - Screen names: Descriptive and unique
 - Control names: TypeName + Number (e.g., `Button1`, `Label2`)
 - Component names: PascalCase
 
-### Property Names:
+### Property Names
+
 - Standard properties: Use exact casing from schema
 - Custom properties: PascalCase recommended
 
 ## Best Practices
 
-### 1. Structure Organization:
+### 1. Structure Organization
+
 - Keep screens logically organized
 - Group related controls using the `Group` property
 - Use meaningful names for all entities
 
-### 2. Formula Writing:
+### 2. Formula Writing
+
 - Keep formulas readable and well-formatted
 - Use comments in complex formulas when possible
 - Avoid overly complex nested expressions
 
-### 3. Component Design:
+### 3. Component Design
+
 - Design components to be reusable
 - Provide clear descriptions for custom properties
 - Use appropriate property kinds (Input/Output)
 
-### 4. Data Source Management:
+### 4. Data Source Management
+
 - Use descriptive names for data sources
 - Document connection requirements
 - Keep data source configurations minimal
 
 ## Validation Rules
 
-### Required Properties:
+### Required Properties
+
 - All controls must have a `Control` property
 - Component definitions must have `DefinitionType`
 - Data sources must have `Type`
 
-### Naming Patterns:
+### Naming Patterns
+
 - Entity names: Minimum 1 character, alphanumeric
 - Control type IDs: Follow pattern `^([A-Z][a-zA-Z0-9]*/)?[A-Z][a-zA-Z0-9]*(@\d+\.\d+\.\d+)?$`
 - Code component names: Follow pattern `^([a-z][a-z0-9]{1,7})_([a-zA-Z0-9]\.)+[a-zA-Z0-9]+$`
 
 ## Common Issues and Solutions
 
-### 1. Invalid Control Types:
+### 1. Invalid Control Types
+
 - Ensure control types are spelled correctly
 - Check for proper casing
 - Verify control type is supported in schema
 
-### 2. Formula Errors:
+### 2. Formula Errors
+
 - All formulas must start with `=`
 - Use proper Power Fx syntax
 - Check for correct property references
 
-### 3. Structure Validation:
+### 3. Structure Validation
+
 - Maintain proper YAML indentation
 - Ensure required properties are present
 - Follow the schema structure exactly
 
-### 4. Custom Component Issues:
+### 4. Custom Component Issues
+
 - Verify `ComponentName` matches definition
 - Ensure custom properties are properly defined
 - Check property kinds are appropriate
 - Validate component library references if using external components
 
-### 5. Performance Considerations:
+### 5. Performance Considerations
+
 - Avoid deeply nested formulas in YAML
 - Use efficient data source queries
 - Consider delegable formulas for large datasets
@@ -384,7 +426,8 @@ Text: =LookUp(Users, ID = 123).Name
 
 ## Advanced Topics
 
-### 1. Component Library Integration:
+### 1. Component Library Integration
+
 ```yaml
 ComponentDefinitions:
   MyLibraryComponent:
@@ -394,12 +437,14 @@ ComponentDefinitions:
     # Component definition details
 ```
 
-### 2. Responsive Design Considerations:
+### 2. Responsive Design Considerations
+
 - Use `Parent.Width` and `Parent.Height` for responsive sizing
 - Consider container-based layouts for complex UIs
 - Use formulas for dynamic positioning and sizing
 
-### 3. Gallery Templates:
+### 3. Gallery Templates
+
 ```yaml
 MyGallery:
   Control: Gallery
@@ -416,7 +461,8 @@ MyGallery:
                 Width: =Parent.TemplateWidth - 20
 ```
 
-### 4. Form Controls and Data Cards:
+### 4. Form Controls and Data Cards
+
 ```yaml
 MyForm:
   Control: Form
@@ -435,7 +481,8 @@ MyForm:
                 Default: =Parent.Default
 ```
 
-### 5. Error Handling in Formulas:
+### 5. Error Handling in Formulas
+
 ```yaml
 Properties:
   Text: =IfError(LookUp(DataSource, ID = 123).Name, "Not Found")
@@ -448,10 +495,12 @@ Properties:
 
 ## Power Apps Source Code Management
 
-### Accessing Source Code Files:
+### Accessing Source Code Files
+
 Power Apps YAML files can be obtained through several methods:
 
 1. **Power Platform CLI**:
+
    ```powershell
    # List canvas apps in environment
    pac canvas list
@@ -461,6 +510,7 @@ Power Apps YAML files can be obtained through several methods:
    ```
 
 2. **Manual Extraction from .msapp**:
+
    ```powershell
    # Extract .msapp file using PowerShell
    Expand-Archive -Path "C:\path\to\yourFile.msapp" -DestinationPath "C:\path\to\destination"
@@ -468,27 +518,31 @@ Power Apps YAML files can be obtained through several methods:
 
 3. **Dataverse Git Integration**: Direct access to source files without .msapp files
 
-### File Structure in .msapp:
+### File Structure in .msapp
+
 - `\src\App.pa.yaml` - Represents the main App configuration
 - `\src\[ScreenName].pa.yaml` - One file for each screen
 - `\src\Component\[ComponentName].pa.yaml` - Component definitions
 
 **Important Notes**:
+
 - Only files in the `\src` folder are intended for source control
 - .pa.yaml files are **read-only** and for review purposes only
 - External editing, merging, and conflict resolution isn't supported
 - JSON files in .msapp aren't stable for source control
 
-### Schema Version Evolution:
+### Schema Version Evolution
+
 1. **Experimental Format** (*.fx.yaml): No longer in development
 2. **Early Preview**: Temporary format, no longer in use
 3. **Source Code** (*.pa.yaml): Current active format with version control support
 
 ## Power Fx Formula Reference
 
-### Formula Categories:
+### Formula Categories
 
 #### **Functions**: Take parameters, perform operations, return values
+
 ```yaml
 Properties:
   Text: =Concatenate("Hello ", User().FullName)
@@ -497,6 +551,7 @@ Properties:
 ```
 
 #### **Signals**: Return environment information (no parameters)
+
 ```yaml
 Properties:
   Text: =Location.Latitude & ", " & Location.Longitude
@@ -505,6 +560,7 @@ Properties:
 ```
 
 #### **Enumerations**: Predefined constant values
+
 ```yaml
 Properties:
   Fill: =Color.Blue
@@ -513,6 +569,7 @@ Properties:
 ```
 
 #### **Named Operators**: Access container information
+
 ```yaml
 Properties:
   Text: =ThisItem.Title        # In galleries
@@ -520,9 +577,10 @@ Properties:
   Height: =Self.Height / 2     # Self-reference
 ```
 
-### Essential Power Fx Functions for YAML:
+### Essential Power Fx Functions for YAML
 
-#### **Navigation & App Control**:
+#### **Navigation & App Control**
+
 ```yaml
 OnSelect: =Navigate(NextScreen, ScreenTransition.Cover)
 OnSelect: =Back()
@@ -530,7 +588,8 @@ OnSelect: =Exit()
 OnSelect: =Launch("https://example.com")
 ```
 
-#### **Data Operations**:
+#### **Data Operations**
+
 ```yaml
 Items: =Filter(DataSource, Category = "Active")
 Text: =LookUp(Users, ID = 123).Name
@@ -538,14 +597,16 @@ OnSelect: =Patch(DataSource, ThisItem, {Status: "Complete"})
 OnSelect: =Collect(LocalCollection, {Name: TextInput1.Text})
 ```
 
-#### **Conditional Logic**:
+#### **Conditional Logic**
+
 ```yaml
 Visible: =If(Toggle1.Value, true, false)
 Text: =Switch(Status, "New", "🆕", "Complete", "✅", "❓")
 Fill: =If(Value < 0, Color.Red, Color.Green)
 ```
 
-#### **Text Manipulation**:
+#### **Text Manipulation**
+
 ```yaml
 Text: =Concatenate("Hello ", User().FullName)
 Text: =Upper(TextInput1.Text)
@@ -553,7 +614,8 @@ Text: =Substitute(Label1.Text, "old", "new")
 Text: =Left(Title, 10) & "..."
 ```
 
-#### **Mathematical Operations**:
+#### **Mathematical Operations**
+
 ```yaml
 Text: =Sum(Sales[Amount])
 Text: =Average(Ratings[Score])
@@ -561,7 +623,8 @@ Text: =Round(Calculation, 2)
 Text: =Max(Values[Number])
 ```
 
-#### **Date & Time Functions**:
+#### **Date & Time Functions**
+
 ```yaml
 Text: =Text(Now(), "mm/dd/yyyy")
 Text: =DateDiff(StartDate, EndDate, Days)
@@ -569,16 +632,18 @@ Text: =Text(Today(), "dddd, mmmm dd, yyyy")
 Visible: =IsToday(DueDate)
 ```
 
-### Formula Syntax Guidelines:
+### Formula Syntax Guidelines
 
-#### **Basic Syntax Rules**:
+#### **Basic Syntax Rules**
+
 - All formulas start with `=`
 - No preceding `+` or `=` sign (unlike Excel)
 - Double quotes for text strings: `="Hello World"`
 - Property references: `ControlName.PropertyName`
 - Comments not supported in YAML context
 
-#### **Formula Elements**:
+#### **Formula Elements**
+
 ```yaml
 # Literal values
 Text: ="Static Text"
@@ -597,7 +662,8 @@ Items: =Sort(DataSource, Title)
 Text: =If(IsBlank(TextInput1.Text), "Enter text", Upper(TextInput1.Text))
 ```
 
-#### **Behavior vs. Property Formulas**:
+#### **Behavior vs. Property Formulas**
+
 ```yaml
 # Property formulas (calculate values)
 Properties:
@@ -609,9 +675,10 @@ Properties:
   OnSelect: =Set(MyVar, true); Navigate(NextScreen); Notify("Done!")
 ```
 
-### Advanced Formula Patterns:
+### Advanced Formula Patterns
 
-#### **Working with Collections**:
+#### **Working with Collections**
+
 ```yaml
 Properties:
   Items: =Filter(MyCollection, Status = "Active")
@@ -619,7 +686,8 @@ Properties:
   OnSelect: =Collect(MyCollection, {Name: "New Item", Status: "Active"})
 ```
 
-#### **Error Handling**:
+#### **Error Handling**
+
 ```yaml
 Properties:
   Text: =IfError(Value(TextInput1.Text), 0)
@@ -629,7 +697,8 @@ Properties:
   )
 ```
 
-#### **Dynamic Property Setting**:
+#### **Dynamic Property Setting**
+
 ```yaml
 Properties:
   Fill: =ColorValue("#" & HexInput.Text)
@@ -639,13 +708,15 @@ Properties:
 
 ## Working with Formulas Best Practices
 
-### Formula Organization:
+### Formula Organization
+
 - Break complex formulas into smaller, readable parts
 - Use variables to store intermediate calculations
 - Comment complex logic using descriptive control names
 - Group related calculations together
 
-### Performance Optimization:
+### Performance Optimization
+
 - Use delegation-friendly functions when working with large datasets
 - Avoid nested function calls in frequently updated properties
 - Use collections for complex data transformations
@@ -653,9 +724,10 @@ Properties:
 
 ## Power Fx Data Types and Operations
 
-### Data Type Categories:
+### Data Type Categories
 
-#### **Primitive Types**:
+#### **Primitive Types**
+
 - **Boolean**: `=true`, `=false`
 - **Number**: `=123`, `=45.67`
 - **Text**: `="Hello World"`
@@ -663,13 +735,15 @@ Properties:
 - **Time**: `=Time(14, 30, 0)`
 - **DateTime**: `=Now()`
 
-#### **Complex Types**:
+#### **Complex Types**
+
 - **Color**: `=Color.Red`, `=RGBA(255, 128, 0, 1)`
 - **Record**: `={Name: "John", Age: 30}`
 - **Table**: `=Table({Name: "John"}, {Name: "Jane"})`
 - **GUID**: `=GUID()`
 
-#### **Type Conversion**:
+#### **Type Conversion**
+
 ```yaml
 Properties:
   Text: =Text(123.45, "#,##0.00")        # Number to text
@@ -678,7 +752,8 @@ Properties:
   Visible: =Boolean("true")              # Text to boolean
 ```
 
-#### **Type Checking**:
+#### **Type Checking**
+
 ```yaml
 Properties:
   Visible: =Not(IsBlank(OptionalField))
@@ -686,9 +761,10 @@ Properties:
   Visible: =IsNumeric(TextInput1.Text)
 ```
 
-### Table Operations:
+### Table Operations
 
-#### **Creating Tables**:
+#### **Creating Tables**
+
 ```yaml
 Properties:
   Items: =Table(
@@ -698,7 +774,8 @@ Properties:
   Items: =["Option 1", "Option 2", "Option 3"]  # Single-column table
 ```
 
-#### **Filtering and Sorting**:
+#### **Filtering and Sorting**
+
 ```yaml
 Properties:
   Items: =Filter(Products, Price > 10)
@@ -706,7 +783,8 @@ Properties:
   Items: =SortByColumns(Products, "Price", Descending, "Name", Ascending)
 ```
 
-#### **Data Transformation**:
+#### **Data Transformation**
+
 ```yaml
 Properties:
   Items: =AddColumns(Products, "Total", Price * Quantity)
@@ -715,7 +793,8 @@ Properties:
   Items: =DropColumns(Products, "InternalID")
 ```
 
-#### **Aggregation**:
+#### **Aggregation**
+
 ```yaml
 Properties:
   Text: =Sum(Products, Price)
@@ -724,23 +803,26 @@ Properties:
   Text: =CountRows(Products)
 ```
 
-### Variables and State Management:
+### Variables and State Management
 
-#### **Global Variables**:
+#### **Global Variables**
+
 ```yaml
 Properties:
   OnSelect: =Set(MyGlobalVar, "Hello World")
   Text: =MyGlobalVar
 ```
 
-#### **Context Variables**:
+#### **Context Variables**
+
 ```yaml
 Properties:
   OnSelect: =UpdateContext({LocalVar: "Screen Specific"})
   OnSelect: =Navigate(NextScreen, None, {PassedValue: 42})
 ```
 
-#### **Collections**:
+#### **Collections**
+
 ```yaml
 Properties:
   OnSelect: =ClearCollect(MyCollection, DataSource)
@@ -750,7 +832,8 @@ Properties:
 
 ## Power Fx Enhanced Connectors and External Data
 
-### Connector Integration:
+### Connector Integration
+
 ```yaml
 DataSources:
   SharePointList:
@@ -763,14 +846,16 @@ DataSources:
     ConnectorId: shared_office365users
 ```
 
-### Working with External Data:
+### Working with External Data
+
 ```yaml
 Properties:
   Items: =Filter(SharePointList, Status = "Active")
   OnSelect: =Office365Users.SearchUser({searchTerm: SearchInput.Text})
 ```
 
-### Delegation Considerations:
+### Delegation Considerations
+
 ```yaml
 Properties:
   # Delegable operations (executed server-side)
@@ -782,7 +867,8 @@ Properties:
 
 ## Troubleshooting and Common Patterns
 
-### Common Error Patterns:
+### Common Error Patterns
+
 ```yaml
 # Handle blank values
 Properties:
@@ -801,7 +887,8 @@ Properties:
   )
 ```
 
-### Performance Optimization:
+### Performance Optimization
+
 ```yaml
 # Efficient data loading
 Properties:
@@ -813,7 +900,8 @@ Properties:
   # Avoid: Sort(DataSource, If(Active, Name, ""))       # Not delegable
 ```
 
-### Memory Management:
+### Memory Management
+
 ```yaml
 # Clear unused collections
 Properties:

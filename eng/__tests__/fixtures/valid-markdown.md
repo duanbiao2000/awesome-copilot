@@ -26,6 +26,7 @@ This is the content of the test markdown file.
 ## Purpose
 
 This fixture is used to test:
+
 1. Frontmatter extraction
 2. String normalization
 3. Content preservation

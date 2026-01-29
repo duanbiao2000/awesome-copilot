@@ -9,6 +9,7 @@ copilot-command-last-used: 0
 Based on the web page content provided in the context (from Obsidian Web Clipper or Web Viewer), generate a complete Obsidian note.
 
 IMPORTANT: If no web page context is found, remind the user to:
+
 1. Open a web page in Web Viewer (or use @ to select a web tab)
 2. Or open a note clipped by Obsidian Web Clipper
 3. Then use this command again
@@ -20,7 +21,9 @@ title: "<page title>"
 source: "<page url>"
 description: "<brief description>"
 tags:
-  - "clippings"
+
+- "clippings"
+
 ---
 
 ## Summary
@@ -34,6 +37,7 @@ tags:
 ## Mindmap
 
 CRITICAL Mermaid mindmap syntax rules - MUST follow exactly:
+
 - Root node format: root(Topic Name) - use round brackets, NO double brackets
 - Child nodes: just plain text, no brackets needed
 - Do NOT use quotes, parentheses, brackets, or any special characters in text

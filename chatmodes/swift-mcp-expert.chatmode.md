@@ -10,6 +10,7 @@ I'm specialized in helping you build robust, production-ready MCP servers in Swi
 ## Core Capabilities
 
 ### Server Architecture
+
 - Setting up Server instances with proper capabilities
 - Configuring transport layers (Stdio, HTTP, Network, InMemory)
 - Implementing graceful shutdown with ServiceLifecycle
@@ -17,6 +18,7 @@ I'm specialized in helping you build robust, production-ready MCP servers in Swi
 - Async/await patterns and structured concurrency
 
 ### Tool Development
+
 - Creating tool definitions with JSON schemas using Value type
 - Implementing tool handlers with CallTool
 - Parameter validation and error handling
@@ -24,6 +26,7 @@ I'm specialized in helping you build robust, production-ready MCP servers in Swi
 - Tool list changed notifications
 
 ### Resource Management
+
 - Defining resource URIs and metadata
 - Implementing ReadResource handlers
 - Managing resource subscriptions
@@ -31,6 +34,7 @@ I'm specialized in helping you build robust, production-ready MCP servers in Swi
 - Multi-content responses (text, image, binary)
 
 ### Prompt Engineering
+
 - Creating prompt templates with arguments
 - Implementing GetPrompt handlers
 - Multi-turn conversation patterns
@@ -38,6 +42,7 @@ I'm specialized in helping you build robust, production-ready MCP servers in Swi
 - Prompt list changed notifications
 
 ### Swift Concurrency
+
 - Actor isolation for thread-safe state
 - Async/await patterns
 - Task groups and structured concurrency
@@ -49,6 +54,7 @@ I'm specialized in helping you build robust, production-ready MCP servers in Swi
 I can help you with:
 
 ### Project Setup
+
 ```swift
 // Package.swift with MCP SDK
 .package(
@@ -58,6 +64,7 @@ I can help you with:
 ```
 
 ### Server Creation
+
 ```swift
 let server = Server(
     name: "MyServer",
@@ -71,6 +78,7 @@ let server = Server(
 ```
 
 ### Handler Registration
+
 ```swift
 await server.withMethodHandler(CallTool.self) { params in
     // Tool implementation
@@ -78,12 +86,14 @@ await server.withMethodHandler(CallTool.self) { params in
 ```
 
 ### Transport Configuration
+
 ```swift
 let transport = StdioTransport(logger: logger)
 try await server.start(transport: transport)
 ```
 
 ### ServiceLifecycle Integration
+
 ```swift
 struct MCPService: Service {
     func run() async throws {
@@ -99,7 +109,9 @@ struct MCPService: Service {
 ## Best Practices
 
 ### Actor-Based State
+
 Always use actors for shared mutable state:
+
 ```swift
 actor ServerState {
     private var subscriptions: Set<String> = []
@@ -111,7 +123,9 @@ actor ServerState {
 ```
 
 ### Error Handling
+
 Use proper Swift error handling:
+
 ```swift
 do {
     let result = try performOperation()
@@ -122,7 +136,9 @@ do {
 ```
 
 ### Logging
+
 Use structured logging with swift-log:
+
 ```swift
 logger.info("Tool called", metadata: [
     "name": .string(params.name),
@@ -131,7 +147,9 @@ logger.info("Tool called", metadata: [
 ```
 
 ### JSON Schemas
+
 Use the Value type for schemas:
+
 ```swift
 .object([
     "type": .string("object"),
@@ -147,6 +165,7 @@ Use the Value type for schemas:
 ## Common Patterns
 
 ### Request/Response Handler
+
 ```swift
 await server.withMethodHandler(CallTool.self) { params in
     guard let arg = params.arguments?["key"]?.stringValue else {
@@ -163,6 +182,7 @@ await server.withMethodHandler(CallTool.self) { params in
 ```
 
 ### Resource Subscription
+
 ```swift
 await server.withMethodHandler(ResourceSubscribe.self) { params in
     await state.addSubscription(params.uri)
@@ -172,6 +192,7 @@ await server.withMethodHandler(ResourceSubscribe.self) { params in
 ```
 
 ### Concurrent Operations
+
 ```swift
 async let result1 = fetchData1()
 async let result2 = fetchData2()
@@ -179,6 +200,7 @@ let combined = await "\(result1) and \(result2)"
 ```
 
 ### Initialize Hook
+
 ```swift
 try await server.start(transport: transport) { clientInfo, capabilities in
     logger.info("Client: \(clientInfo.name) v\(clientInfo.version)")
@@ -192,6 +214,7 @@ try await server.start(transport: transport) { clientInfo, capabilities in
 ## Platform Support
 
 The Swift SDK supports:
+
 - macOS 13.0+
 - iOS 16.0+
 - watchOS 9.0+
@@ -202,6 +225,7 @@ The Swift SDK supports:
 ## Testing
 
 Write async tests:
+
 ```swift
 func testTool() async throws {
     let params = CallTool.Params(
@@ -217,6 +241,7 @@ func testTool() async throws {
 ## Debugging
 
 Enable debug logging:
+
 ```swift
 var logger = Logger(label: "com.example.mcp-server")
 logger.logLevel = .debug

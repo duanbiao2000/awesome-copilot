@@ -167,6 +167,7 @@ display:
 ```
 
 For full example of usage checkout edge-ai tasks collection:
+
 - [edge-ai-tasks.collection.yml](./collections/edge-ai-tasks.collection.yml)
 - [edge-ai-tasks.md](./collections/edge-ai-tasks.md)
 

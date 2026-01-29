@@ -55,6 +55,7 @@
    - 实施异步并行处理以提高效率
 
 2. **示例改进**:
+
    ```javascript
    // 原始代码（同步）
    const content = fs.readFileSync(filePath, 'utf8');
@@ -107,6 +108,7 @@
    - 对于大型集合的处理，使用生成器函数避免一次性加载所有数据到内存中
    - 在处理文件路径列表时，使用专门的数据结构而不是简单的数组
    - 具体示例改进：
+
      ```javascript
      // 原始代码使用数组进行线性搜索
      const servers = json?.payload?.mcpRegistryRoute?.serversData?.servers || [];

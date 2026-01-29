@@ -243,6 +243,8 @@
   },
   "active": "3207cc0db7d37763",
   "lastOpenFiles": [
+    "plans/awesome-copilot-仓库要点提取与分析.md",
+    "plans",
     "chatmodes/ms-sql-dba.chatmode.md",
     "chatmodes/drupal-expert.chatmode.md",
     "优选/demonstrate-understanding.chatmode 1.md",
@@ -269,7 +271,6 @@
     "copilot/copilot-custom-prompts/Rewrite as tweet thread.md",
     "copilot/copilot-custom-prompts/Rewrite as tweet.md",
     "copilot/copilot-custom-prompts/Remove URLs.md",
-    "copilot/copilot-custom-prompts/Generate glossary.md",
     "copilot/copilot-custom-prompts",
     "copilot"
   ]

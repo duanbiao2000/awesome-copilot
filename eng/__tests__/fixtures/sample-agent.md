@@ -35,10 +35,15 @@ mcp-servers:
 ---
 
 # Educational Note: Agent Content
-# 
-# The content of an agent file typically includes:
+
+#
+
+# The content of an agent file typically includes
+
 # 1. Description of the agent's purpose
+
 # 2. Usage instructions
+
 # 3. Examples of how to use the agent
 
 ## Purpose

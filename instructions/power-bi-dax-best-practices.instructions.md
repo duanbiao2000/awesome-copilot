@@ -6,11 +6,13 @@ applyTo: '**/*.{pbix,dax,md,txt}'
 # Power BI DAX Best Practices
 
 ## Overview
+
 This document provides comprehensive instructions for writing efficient, maintainable, and performant DAX (Data Analysis Expressions) formulas in Power BI, based on Microsoft's official guidance and best practices.
 
 ## Core DAX Principles
 
 ### 1. Formula Structure and Variables
+
 Always use variables to improve performance, readability, and debugging:
 
 ```dax
@@ -34,12 +36,14 @@ DIVIDE(
 ```
 
 **Key Benefits of Variables:**
+
 - **Performance**: Calculations are evaluated once and cached
 - **Readability**: Complex formulas become self-documenting
 - **Debugging**: Can temporarily return variable values for testing
 - **Maintainability**: Changes need to be made in only one place
 
 ### 2. Proper Reference Syntax
+
 Follow Microsoft's recommended patterns for column and measure references:
 
 ```dax
@@ -65,6 +69,7 @@ Growth Rate = DIVIDE(Sales[Total Sales] - Sales[Total Sales PY], Sales[Total Sal
 ```
 
 ### 3. Error Handling Strategies
+
 Implement robust error handling using appropriate patterns:
 
 ```dax
@@ -98,6 +103,7 @@ IF(
 ## DAX Function Categories and Best Practices
 
 ### Aggregation Functions
+
 ```dax
 // Use appropriate aggregation functions for performance
 Customer Count = DISTINCTCOUNT(Sales[CustomerID])  // ✅ For unique counts
@@ -110,6 +116,7 @@ Average Deal Size = AVERAGE(Sales[DealValue])      // ✅ For averages
 ```
 
 ### Filter and Context Functions
+
 ```dax
 // Efficient use of CALCULATE with multiple filters
 High Value Customers = 
@@ -143,6 +150,7 @@ CALCULATE(
 ```
 
 ### Time Intelligence Patterns
+
 ```dax
 // Standard time intelligence measures
 YTD Sales = 
@@ -184,6 +192,7 @@ RETURN
 ```
 
 ### Advanced DAX Patterns
+
 ```dax
 // Ranking with proper context
 Product Rank = 
@@ -230,6 +239,7 @@ RETURN
 ## Performance Optimization Techniques
 
 ### 1. Efficient Variable Usage
+
 ```dax
 // ✅ Store expensive calculations in variables
 Complex Measure = 
@@ -251,6 +261,7 @@ RETURN
 ```
 
 ### 2. Context Transition Optimization
+
 ```dax
 // ✅ Minimize context transitions in iterator functions
 Total Product Profit = 
@@ -264,6 +275,7 @@ SUMX(
 ```
 
 ### 3. Efficient Filtering Patterns
+
 ```dax
 // ✅ Use table expressions efficiently
 Top 10 Customers = 
@@ -290,6 +302,7 @@ CALCULATE(
 ## Common DAX Anti-Patterns to Avoid
 
 ### 1. Performance Anti-Patterns
+
 ```dax
 // ❌ AVOID: Nested CALCULATE functions
 Inefficient Nested = 
@@ -318,6 +331,7 @@ Sales = SUM(Sales[Amount])
 ```
 
 ### 2. Readability Anti-Patterns
+
 ```dax
 // ❌ AVOID: Complex nested expressions without variables
 Complex Without Variables = 
@@ -347,6 +361,7 @@ RETURN
 ## DAX Debugging and Testing Strategies
 
 ### 1. Variable-Based Debugging
+
 ```dax
 // Use this pattern for step-by-step debugging
 Debug Measure = 
@@ -363,6 +378,7 @@ RETURN
 ```
 
 ### 2. Testing Patterns
+
 ```dax
 // Include data validation in measures
 Validated Measure = 
@@ -378,6 +394,7 @@ RETURN
 ## Measure Organization and Naming
 
 ### 1. Naming Conventions
+
 ```dax
 // Use descriptive, consistent naming
 Total Sales = SUM(Sales[Amount])
@@ -392,6 +409,7 @@ Base - Order Count = COUNTROWS(Orders)
 ```
 
 ### 2. Measure Dependencies
+
 ```dax
 // Build measures hierarchically for reusability
 // Base measures
@@ -410,6 +428,7 @@ Margin Trend = [Margin %] - CALCULATE([Margin %], PREVIOUSMONTH('Date'[Date]))
 ## Model Integration Best Practices
 
 ### 1. Working with Star Schema
+
 ```dax
 // Leverage proper relationships
 Sales by Category = 
@@ -427,6 +446,7 @@ CALCULATE(
 ```
 
 ### 2. Handle Missing Relationships
+
 ```dax
 // When direct relationships don't exist
 Cross Table Analysis = 
@@ -444,6 +464,7 @@ RETURN
 ## Advanced DAX Concepts
 
 ### 1. Row Context vs Filter Context
+
 ```dax
 // Understanding context differences
 Row Context Example = 
@@ -460,6 +481,7 @@ CALCULATE(
 ```
 
 ### 2. Context Transition
+
 ```dax
 // When row context becomes filter context
 Sales Per Product = 
@@ -470,6 +492,7 @@ SUMX(
 ```
 
 ### 3. Extended Columns and Computed Tables
+
 ```dax
 // Use for complex analytical scenarios
 Product Analysis = 
@@ -485,6 +508,7 @@ ADDCOLUMNS(
 ```
 
 ### 4. Advanced Time Intelligence Patterns
+
 ```dax
 // Multi-period comparisons with calculation groups
 // Example showing how to create dynamic time calculations
@@ -533,6 +557,7 @@ RETURN
 ```
 
 ### 5. Advanced Performance Optimization Techniques
+
 ```dax
 // Optimized running totals
 Running Total Optimized = 
@@ -588,6 +613,7 @@ RETURN
 ```
 
 ### 6. Complex Analytical Scenarios
+
 ```dax
 // Customer cohort analysis
 Cohort Retention Rate = 
@@ -647,6 +673,7 @@ RETURN
 ```
 
 ### 7. Advanced Debugging and Profiling
+
 ```dax
 // Debug measure with detailed variable inspection
 Complex Measure Debug = 
@@ -692,6 +719,7 @@ RETURN
 ```
 
 ### 8. Working with Complex Data Types
+
 ```dax
 // JSON parsing and manipulation
 Extract JSON Value = 
@@ -722,6 +750,7 @@ RETURN
 ## DAX Formula Documentation
 
 ### 1. Commenting Best Practices
+
 ```dax
 /* 
 Business Rule: Calculate customer lifetime value based on:
@@ -751,6 +780,7 @@ RETURN
 ```
 
 ### 2. Version Control and Change Management
+
 ```dax
 // Include version history in measure descriptions
 /*
@@ -770,6 +800,7 @@ Business Logic:
 ## Testing and Validation Framework
 
 ### 1. Unit Testing Patterns
+
 ```dax
 // Create test measures for validation
 Test - Sales Sum = 
@@ -781,6 +812,7 @@ RETURN
 ```
 
 ### 2. Performance Testing
+
 ```dax
 // Monitor execution time for complex measures
 Performance Monitor = 

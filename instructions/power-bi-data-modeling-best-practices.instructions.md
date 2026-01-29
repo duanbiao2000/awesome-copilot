@@ -6,12 +6,15 @@ applyTo: '**/*.{pbix,md,json,txt}'
 # Power BI Data Modeling Best Practices
 
 ## Overview
+
 This document provides comprehensive instructions for designing efficient, scalable, and maintainable Power BI semantic models following Microsoft's official guidance and dimensional modeling best practices.
 
 ## Star Schema Design Principles
 
 ### 1. Fundamental Table Types
+
 **Dimension Tables** - Store descriptive business entities:
+
 - Products, customers, geography, time, employees
 - Contain unique key columns (preferably surrogate keys)
 - Relatively small number of rows
@@ -19,6 +22,7 @@ This document provides comprehensive instructions for designing efficient, scala
 - Support hierarchical drill-down scenarios
 
 **Fact Tables** - Store measurable business events:
+
 - Sales transactions, website clicks, manufacturing events
 - Contain foreign keys to dimension tables
 - Numeric measures for aggregation
@@ -47,6 +51,7 @@ DimDate (Dimension)             └── DiscountAmount
 ### 2. Table Design Best Practices
 
 #### Dimension Table Design
+
 ```
 ✅ DO:
 - Use surrogate keys (auto-incrementing integers) as primary keys
@@ -64,6 +69,7 @@ DimDate (Dimension)             └── DiscountAmount
 ```
 
 #### Fact Table Design
+
 ```
 ✅ DO:
 - Store data at the most granular level needed
@@ -84,6 +90,7 @@ DimDate (Dimension)             └── DiscountAmount
 ### 1. Relationship Types and Best Practices
 
 #### One-to-Many Relationships (Standard Pattern)
+
 ```
 Configuration:
 - From Dimension (One side) to Fact (Many side)
@@ -97,6 +104,7 @@ DimDate (1) ← DateKey → (*) FactSales
 ```
 
 #### Many-to-Many Relationships (Use Sparingly)
+
 ```
 When to Use:
 ✅ Genuine many-to-many business relationships
@@ -114,6 +122,7 @@ DimCustomer (1) ← CustomerKey → (*) BridgeCustomerAccount (*) ← AccountKey
 ```
 
 #### One-to-One Relationships (Rare)
+
 ```
 When to Use:
 - Extending dimension tables with additional attributes
@@ -127,6 +136,7 @@ Implementation:
 ```
 
 ### 2. Relationship Configuration Guidelines
+
 ```
 Filter Direction:
 ✅ Single Direction: Default choice, best performance
@@ -147,6 +157,7 @@ Referential Integrity:
 ## Storage Mode Optimization
 
 ### 1. Import Mode Best Practices
+
 ```
 When to Use Import Mode:
 ✅ Data size fits within capacity limits
@@ -163,6 +174,7 @@ Optimization Strategies:
 ```
 
 #### Data Reduction Techniques for Import
+
 ```
 Vertical Filtering (Column Reduction):
 ✅ Remove columns not used in reports or relationships
@@ -184,6 +196,7 @@ High Precision → Lower Precision: Match business requirements
 ```
 
 ### 2. DirectQuery Mode Best Practices
+
 ```
 When to Use DirectQuery Mode:
 ✅ Data exceeds import capacity limits
@@ -201,6 +214,7 @@ Optimization Requirements:
 ```
 
 #### DirectQuery Performance Optimization
+
 ```
 Database Optimization:
 ✅ Create indexes on frequently filtered columns
@@ -224,6 +238,7 @@ Query Performance:
 ```
 
 ### 3. Composite Model Design
+
 ```
 When to Use Composite Models:
 ✅ Combine historical (Import) with real-time (DirectQuery) data
@@ -239,6 +254,7 @@ Hybrid: Fact tables combining historical (Import) with recent (DirectQuery) data
 ```
 
 #### Dual Storage Mode Strategy
+
 ```
 Use Dual Mode For:
 ✅ Dimension tables that relate to both Import and DirectQuery facts
@@ -255,6 +271,7 @@ Configuration:
 ## Advanced Modeling Patterns
 
 ### 1. Date Table Design
+
 ```
 Essential Date Table Attributes:
 ✅ Continuous date range (no gaps)
@@ -277,6 +294,7 @@ FiscalQuarter (Text): FY2024 Q3
 ```
 
 ### 2. Slowly Changing Dimensions (SCD)
+
 ```
 Type 1 SCD (Overwrite):
 - Update existing records with new values
@@ -300,6 +318,7 @@ IsCurrent: FALSE, TRUE, TRUE, TRUE
 ```
 
 ### 3. Role-Playing Dimensions
+
 ```
 Scenario: Date table used for Order Date, Ship Date, Delivery Date
 
@@ -324,6 +343,7 @@ Sales by Delivery Date = CALCULATE([Total Sales], USERELATIONSHIP(FactSales[Deli
 ```
 
 ### 4. Bridge Tables for Many-to-Many
+
 ```
 Scenario: Students can be in multiple Courses, Courses can have multiple Students
 
@@ -348,6 +368,7 @@ Relationship Configuration:
 ## Performance Optimization Strategies
 
 ### 1. Model Size Optimization
+
 ```
 Column Optimization:
 ✅ Remove unused columns completely
@@ -369,6 +390,7 @@ Aggregation Strategies:
 ```
 
 ### 2. Relationship Performance
+
 ```
 Key Selection:
 ✅ Use integer keys over text keys
@@ -390,6 +412,7 @@ Cross-Filtering Strategy:
 ```
 
 ### 3. Query Performance Patterns
+
 ```
 Efficient Model Patterns:
 ✅ Proper star schema implementation
@@ -409,6 +432,7 @@ Query Optimization:
 ## Security and Governance
 
 ### 1. Row-Level Security (RLS)
+
 ```
 Implementation Patterns:
 
@@ -441,6 +465,7 @@ Best Practices:
 ```
 
 ### 2. Data Governance
+
 ```
 Documentation Requirements:
 ✅ Business definitions for all measures
@@ -466,6 +491,7 @@ Version Control:
 ## Testing and Validation Framework
 
 ### 1. Model Testing Checklist
+
 ```
 Functional Testing:
 □ All relationships function correctly
@@ -490,6 +516,7 @@ Data Quality Testing:
 ```
 
 ### 2. Validation Procedures
+
 ```
 Business Validation:
 ✅ Compare report totals with source systems
@@ -509,6 +536,7 @@ Technical Validation:
 ## Common Anti-Patterns to Avoid
 
 ### 1. Schema Anti-Patterns
+
 ```
 ❌ Snowflake Schema (Unless Necessary):
 - Multiple normalized dimension tables
@@ -530,6 +558,7 @@ Technical Validation:
 ```
 
 ### 2. Relationship Anti-Patterns  
+
 ```
 ❌ Bidirectional Relationships Everywhere:
 - Performance impact
@@ -553,6 +582,7 @@ Technical Validation:
 ## Advanced Data Modeling Patterns
 
 ### 1. Slowly Changing Dimensions Implementation
+
 ```powerquery
 // Type 1 SCD: Power Query implementation for hash-based change detection
 let
@@ -595,6 +625,7 @@ in
 ```
 
 ### 2. Incremental Refresh with Query Folding
+
 ```powerquery
 // Optimized incremental refresh pattern
 let
@@ -607,6 +638,7 @@ in
 ```
 
 ### 3. Semantic Link Integration
+
 ```python
 # Working with Power BI semantic models in Python
 import sempy.fabric as fabric
@@ -617,6 +649,7 @@ plot_relationship_metadata(relationships)
 ```
 
 ### 4. Advanced Partition Strategies
+
 ```json
 // TMSL partition with time-based filtering
 "partition": {

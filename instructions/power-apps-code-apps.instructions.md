@@ -21,6 +21,7 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
 ### Project Structure
 
 - Use well-organized folder structure with clear separation of concerns:
+
   ```
   src/
   ├── components/          # Reusable UI components
@@ -32,6 +33,7 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
   ├── PowerProvider.tsx  # Power Platform initialization
   └── main.tsx          # Application entry point
   ```
+
 - Keep generated files (`services/`, `models/`) separate from custom code
 - Use consistent naming conventions (kebab-case for files, PascalCase for components)
 
@@ -39,6 +41,7 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
 
 - Set `verbatimModuleSyntax: false` in tsconfig.json for Power Apps SDK compatibility
 - Enable strict mode for type safety with recommended tsconfig.json:
+
   ```json
   {
     "compilerOptions": {
@@ -65,6 +68,7 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     }
   }
   ```
+
 - Use proper typing for Power Platform connector responses
 - Configure path alias with `"@": path.resolve(__dirname, "./src")` for cleaner imports
 - Define interfaces for app-specific data structures
@@ -73,7 +77,9 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
 ### Advanced Power Platform Integration
 
 #### Custom Control Frameworks (PCF Controls)
+
 - **Integrate PCF controls**: Embed Power Apps Component Framework controls in Code Apps
+
   ```typescript
   // Example: Using custom PCF control for data visualization
   import { PCFControlWrapper } from './components/PCFControlWrapper';
@@ -88,11 +94,14 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     );
   };
   ```
+
 - **PCF control communication**: Handle events and data binding between PCF and React
 - **Custom control deployment**: Package and deploy PCF controls with Code Apps
 
 #### Power BI Embedded Analytics
+
 - **Embed Power BI reports**: Integrate interactive dashboards and reports
+
   ```typescript
   import { PowerBIEmbed } from 'powerbi-client-react';
   
@@ -113,11 +122,14 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     );
   };
   ```
+
 - **Dynamic report filtering**: Filter Power BI reports based on Code App context
 - **Report export functionality**: Enable PDF, Excel, and image exports
 
 #### AI Builder Integration
+
 - **Cognitive services integration**: Use AI Builder models for form processing, object detection
+
   ```typescript
   // Example: Document processing with AI Builder
   const processDocument = async (file: File) => {
@@ -132,12 +144,15 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     return result.extractedFields;
   };
   ```
+
 - **Prediction models**: Integrate custom AI models for business predictions
 - **Sentiment analysis**: Analyze text sentiment using AI Builder
 - **Object detection**: Implement image analysis and object recognition
 
 #### Power Virtual Agents Integration
+
 - **Chatbot embedding**: Integrate Power Virtual Agents bots within Code Apps
+
   ```typescript
   import { DirectLine } from 'botframework-directlinejs';
   import { WebChat } from 'botframework-webchat';
@@ -154,12 +169,14 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     );
   };
   ```
+
 - **Context passing**: Share Code App context with chatbot conversations
 - **Custom bot actions**: Trigger Code App functions from bot interactions
 - Use generated TypeScript services from PAC CLI for connector operations
 - Implement proper authentication flows with Microsoft Entra ID
 - Handle connector consent dialogs and permission management
 - PowerProvider implementation pattern:
+
   ```typescript
   import { initialize } from "@microsoft/power-apps/app";
   import { useEffect, type ReactNode } from "react";
@@ -179,6 +196,7 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     return <>{children}</>;
   }
   ```
+
 - Follow officially supported connector patterns:
   - SQL Server (including Azure SQL)
   - SharePoint
@@ -210,13 +228,17 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
 - Cache frequently accessed data appropriately
 
 #### Advanced Dataverse Relationships
+
 - **Many-to-many relationships**: Implement junction tables and relationship services
+
   ```typescript
   // Example: User-to-Role many-to-many relationship
   const userRoles = await UserRoleService.getall();
   const filteredRoles = userRoles.filter(ur => ur.userId === currentUser.id);
   ```
+
 - **Polymorphic lookups**: Handle customer fields that can reference multiple entity types
+
   ```typescript
   // Handle polymorphic customer lookup (Account or Contact)
   const customerType = record.customerType; // 'account' or 'contact'
@@ -225,6 +247,7 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     ? await AccountService.get(customerId)
     : await ContactService.get(customerId);
   ```
+
 - **Complex relationship queries**: Use $expand and $filter for efficient data retrieval
 - **Relationship validation**: Implement business rules for relationship constraints
 
@@ -237,7 +260,9 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
 - Implement proper pagination for large data sets
 
 #### Offline-First Architecture with Sync Patterns
+
 - **Service Worker implementation**: Enable offline functionality
+
   ```typescript
   // Example: Service worker registration
   if ('serviceWorker' in navigator) {
@@ -248,7 +273,9 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     });
   }
   ```
+
 - **Local data storage**: Use IndexedDB for offline data persistence
+
   ```typescript
   // Example: IndexedDB wrapper for offline storage
   class OfflineDataStore {
@@ -265,6 +292,7 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     }
   }
   ```
+
 - **Sync conflict resolution**: Handle data conflicts when coming back online
 - **Background sync**: Implement periodic data synchronization
 - **Progressive Web App (PWA)**: Enable app installation and offline capabilities
@@ -318,7 +346,9 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
 - Implement proper backup and disaster recovery procedures
 
 #### Multi-Environment Deployment Pipelines
+
 - **Environment-specific configurations**: Manage dev/test/staging/prod environments
+
   ```json
   // Example: environment-specific config files
   // config/development.json
@@ -333,7 +363,9 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     }
   }
   ```
+
 - **Automated deployment pipelines**: Use Azure DevOps or GitHub Actions
+
   ```yaml
   # Example Azure DevOps pipeline step
   - task: PowerPlatformToolInstaller@2
@@ -345,6 +377,7 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
       tenantId: '$(TenantId)'
   - task: PowerPlatformPublishCustomizations@2
   ```
+
 - **Environment promotion**: Automated promotion from dev → test → staging → prod
 - **Rollback strategies**: Implement automated rollback on deployment failures
 - **Configuration management**: Use Azure Key Vault for environment-specific secrets
@@ -387,7 +420,9 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
 #### Advanced UI/UX Patterns
 
 ##### Design System Implementation with Component Libraries
+
 - **Component library structure**: Build reusable component system
+
   ```typescript
   // Example: Design system button component
   interface ButtonProps {
@@ -405,11 +440,14 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     return <button className={classes} onClick={onClick} disabled={disabled}>{children}</button>;
   };
   ```
+
 - **Design tokens**: Implement consistent spacing, colors, typography
 - **Component documentation**: Use Storybook for component documentation
 
 ##### Dark Mode and Theming Systems
+
 - **Theme provider implementation**: Support multiple themes
+
   ```typescript
   // Example: Theme context and provider
   const ThemeContext = createContext({
@@ -431,11 +469,14 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     );
   };
   ```
+
 - **CSS custom properties**: Use CSS variables for dynamic theming
 - **System preference detection**: Respect user's OS theme preference
 
 ##### Responsive Design Advanced Patterns
+
 - **Container queries**: Use container-based responsive design
+
   ```css
   /* Example: Container query for responsive components */
   .card-container {
@@ -449,11 +490,14 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     }
   }
   ```
+
 - **Fluid typography**: Implement responsive font scaling
 - **Adaptive layouts**: Change layout patterns based on screen size and context
 
 ##### Animation and Micro-interactions
+
 - **Framer Motion integration**: Smooth animations and transitions
+
   ```typescript
   import { motion, AnimatePresence } from 'framer-motion';
   
@@ -472,12 +516,15 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     );
   };
   ```
+
 - **Loading states**: Animated skeletons and progress indicators
 - **Gesture recognition**: Swipe, pinch, and touch interactions
 - **Performance optimization**: Use CSS transforms and will-change property
 
 ##### Accessibility Automation and Testing
+
 - **ARIA implementation**: Proper semantic markup and ARIA attributes
+
   ```typescript
   // Example: Accessible modal component
   const Modal: React.FC<{isOpen: boolean, onClose: () => void, children: ReactNode}> = ({ 
@@ -504,12 +551,15 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     );
   };
   ```
+
 - **Automated accessibility testing**: Integrate axe-core for accessibility testing
 - **Keyboard navigation**: Implement full keyboard accessibility
 - **Screen reader optimization**: Test with NVDA, JAWS, and VoiceOver
 
 ##### Internationalization (i18n) and Localization
+
 - **React-intl integration**: Multi-language support
+
   ```typescript
   import { FormattedMessage, useIntl } from 'react-intl';
   
@@ -527,6 +577,7 @@ Instructions for generating high-quality Power Apps Code Apps using TypeScript, 
     );
   };
   ```
+
 - **Language detection**: Automatic language detection and switching
 - **RTL support**: Right-to-left language support for Arabic, Hebrew
 - **Date and number formatting**: Locale-specific formatting

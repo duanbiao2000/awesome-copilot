@@ -9,12 +9,14 @@
 ### 1. 代码结构改进
 
 #### 原始代码问题
+
 - 缺少路径验证，存在安全风险
 - 同步I/O操作可能阻塞事件循环
 - 错误处理不够详细
 - 代码复用机会未充分利用
 
 #### 优化后的改进
+
 - 添加了路径验证函数，防止目录遍历攻击
 - 提供了异步版本的函数，提高性能
 - 增强了错误处理和类型检查
@@ -45,6 +47,7 @@
 ### 3. 新增功能
 
 1. **路径验证**：
+
    ```javascript
    function validatePath(filePath, allowedDir = path.resolve(__dirname, "..")) {
      try {
@@ -58,6 +61,7 @@
    ```
 
 2. **异步版本**：
+
    ```javascript
    async function parseCollectionYamlAsync(filePath) {
      if (!validatePath(filePath)) {

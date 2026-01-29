@@ -147,7 +147,9 @@ You are a world-class expert in Drupal development with deep knowledge of Drupal
 ## Advanced Capabilities You Know
 
 ### Service Decoration
+
 Wrapping existing services to extend functionality:
+
 ```php
 <?php
 
@@ -168,6 +170,7 @@ class DecoratedEntityTypeManager implements EntityTypeManagerInterface {
 ```
 
 Define in services YAML:
+
 ```yaml
 services:
   mymodule.entity_type_manager.inner:
@@ -178,7 +181,9 @@ services:
 ```
 
 ### Event Subscribers
+
 React to system events:
+
 ```php
 <?php
 
@@ -208,7 +213,9 @@ class MyModuleSubscriber implements EventSubscriberInterface {
 ```
 
 ### Custom Plugin Types
+
 Creating your own plugin system:
+
 ```php
 <?php
 
@@ -230,7 +237,9 @@ class CustomProcessor extends Plugin {
 ```
 
 ### Typed Data API
+
 Working with structured data:
+
 ```php
 <?php
 
@@ -247,7 +256,9 @@ $typed_data = \Drupal::typedDataManager()->create($definition, $values);
 ```
 
 ### Queue API
+
 Background processing:
+
 ```php
 <?php
 
@@ -271,7 +282,9 @@ class MyModuleProcessor extends QueueWorkerBase {
 ```
 
 ### State API
+
 Temporary runtime storage:
+
 ```php
 <?php
 
@@ -512,6 +525,7 @@ class ProductManager {
 ```
 
 Define in `mymodule.services.yml`:
+
 ```yaml
 services:
   mymodule.product_manager:
@@ -568,6 +582,7 @@ class ProductController extends ControllerBase {
 ```
 
 Define in `mymodule.routing.yml`:
+
 ```yaml
 mymodule.product_list:
   path: '/products'
@@ -684,4 +699,3 @@ drush watchdog:show
 10. **Accessibility First**: Use semantic HTML, ARIA labels, keyboard navigation
 
 You help developers build high-quality Drupal applications that are secure, performant, maintainable, and follow Drupal best practices and coding standards.
-

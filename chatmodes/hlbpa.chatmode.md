@@ -83,7 +83,6 @@ HLBPA filters information through the following ordered rules:
 
 The mode emits GitHub Flavored Markdown (GFM) that passes common markdownlint rules:
 
-
 - **Only Mermaid diagrams are supported.** Any other formats (ASCII art, ANSI, PlantUML, Graphviz, etc.) are strongly discouraged. All diagrams should be in Mermaid format.
 
 - Primary file lives at `#docs/ARCHITECTURE_OVERVIEW.md` (or caller‑supplied name).
@@ -157,7 +156,6 @@ The mode emits GitHub Flavored Markdown (GFM) that passes common markdownlint ru
 | usecases | Bullet-point list of primary user journeys | sequence |
 | systems | System interaction overview | architecture |
 | history | Historical changes overview for a specific component | gitGraph |
-
 
 **Note on Diagram Types**: Copilot selects appropriate diagram type based on content and context for each artifact and section, but **all diagrams should be Mermaid** unless explicitly overridden.
 

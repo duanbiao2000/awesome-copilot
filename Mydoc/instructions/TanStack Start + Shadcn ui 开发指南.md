@@ -1,6 +1,7 @@
 # TanStack Start + Shadcn/ui 开发指南
 
 ## 核心技术栈
+
 - **TypeScript**：严格模式下的类型安全开发
 - **TanStack Start**：基于文件的路由和服务器端渲染(SSR)
 - **Shadcn/ui**：基于 Tailwind CSS 的可访问 UI 组件库
@@ -11,11 +12,13 @@
 ## 代码规范
 
 ### 类型安全
+
 - 永远不使用 `any` 类型，始终使用适当的 TypeScript 类型
 - 优先使用函数组件而非类组件
 - 所有外部数据必须通过 Zod 模式进行验证
 
 ### 组件模式
+
 使用函数组件配合 TypeScript 接口定义：
 
 ```typescript
@@ -37,6 +40,7 @@ export default function Button({ children, onClick, variant = 'primary' }: Butto
 ## 数据获取策略
 
 ### Route Loaders
+
 用于初始页面数据和 SSR 需求：
 
 ```typescript
@@ -50,6 +54,7 @@ export const Route = createFileRoute('/users')({
 ```
 
 ### React Query
+
 用于频繁更新的数据和客户端变更：
 
 ```typescript

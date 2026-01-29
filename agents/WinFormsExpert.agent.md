@@ -10,18 +10,20 @@ These are the coding and design guidelines and instructions for WinForms Expert 
 When customer asks/requests will require the creation of new projects
 
 **New Projects:**
+
 * Prefer .NET 10+. Note: MVVM Binding requires .NET 8+.
 * Prefer `Application.SetColorMode(SystemColorMode.System);` in `Program.cs` at application startup for DarkMode support (.NET 9+).
 * Make Windows API projection available by default. Assume 10.0.22000.0 as minimum Windows version requirement.
+
 ```xml
     <TargetFramework>net10.0-windows10.0.22000.0</TargetFramework>
 ```
 
 **Critical:**
 
-**📦 NUGET:** New projects or supporting class libraries often need special NuGet packages. 
+**📦 NUGET:** New projects or supporting class libraries often need special NuGet packages.
 Follow these rules strictly:
- 
+
 * Prefer well-known, stable, and widely adopted NuGet packages - compatible with the project's TFM.
 * Define the versions to the latest STABLE major version, e.g.: `[2.*,)`
 
@@ -31,18 +33,17 @@ For setting the HighDpiMode, use e.g. `Application.SetHighDpiMode(HighDpiMode.Sy
 Note: `SystemAware` is standard for .NET, use `PerMonitorV2` when explicitly requested.
 
 **VB Specifics:**
-- In VB, do NOT create a *Program.vb* - rather use the VB App Framework.
-- For the specific settings, make sure the VB code file *ApplicationEvents.vb* is available. 
+* In VB, do NOT create a *Program.vb* - rather use the VB App Framework.
+* For the specific settings, make sure the VB code file *ApplicationEvents.vb* is available.
   Handle the `ApplyApplicationDefaults` event there and use the passed EventArgs to set the App defaults via its properties.
 
-| Property | Type | Purpose | 
+| Property | Type | Purpose |
 |----------|------|---------|
 | ColorMode | `SystemColorMode` | DarkMode setting for the application. Prefer `System`. Other options: `Dark`, `Classic`. |
-| Font | `Font` | Default Font for the whole Application. |	
+| Font | `Font` | Default Font for the whole Application. | 
 | HighDpiMode | `HighDpiMode` | `SystemAware` is default. `PerMonitorV2` only when asked for HighDPI Multi-Monitor scenarios. |
 
 ---
-
 
 ## 🎯 Critical Generic WinForms Issue: Dealing with Two Code Contexts
 
@@ -248,19 +249,19 @@ private void Button_Click(object? sender, EventArgs e)
 
 ### C# Conventions
 
-- File-scoped namespaces
-- Assume global using directives
-- NRTs OK in main Form/UserControl file; forbidden in code-behind `.designer.cs`
-- Event _handlers_: `object? sender`
-- Events: nullable (`EventHandler?`)
+* File-scoped namespaces
+* Assume global using directives
+* NRTs OK in main Form/UserControl file; forbidden in code-behind `.designer.cs`
+* Event *handlers*: `object? sender`
+* Events: nullable (`EventHandler?`)
 
 ### VB.NET Conventions
 
-- Use Application Framework. There is no `Program.vb`. 
-- Forms/UserControls: No constructor by default (compiler generates with `InitializeComponent()` call)
-- If constructor needed, include `InitializeComponent()` call
-- CRITICAL: `Friend WithEvents controlName as ControlType` for control backing fields.
-- Strongly prefer event handlers `Sub`s with `Handles` clause in main code over `AddHandler` in  file`InitializeComponent`
+* Use Application Framework. There is no `Program.vb`.
+* Forms/UserControls: No constructor by default (compiler generates with `InitializeComponent()` call)
+* If constructor needed, include `InitializeComponent()` call
+* CRITICAL: `Friend WithEvents controlName as ControlType` for control backing fields.
+* Strongly prefer event handlers `Sub`s with `Handles` clause in main code over `AddHandler` in  file`InitializeComponent`
 
 ---
 
@@ -276,9 +277,9 @@ private void Button_Click(object? sender, EventArgs e)
 
 ### Data Binding Rules
 
-- Object DataSources: `INotifyPropertyChanged`, `BindingList<T>` required, prefer `ObservableObject` from MVVM CommunityToolkit.
-- `ObservableCollection<T>`: Requires `BindingList<T>` a dedicated adapter, that merges both change notifications approaches. Create, if not existing.
-- One-way-to-source: Unsupported in WinForms DataBinding (workaround: additional dedicated VM property with NO-OP property setter).
+* Object DataSources: `INotifyPropertyChanged`, `BindingList<T>` required, prefer `ObservableObject` from MVVM CommunityToolkit.
+* `ObservableCollection<T>`: Requires `BindingList<T>` a dedicated adapter, that merges both change notifications approaches. Create, if not existing.
+* One-way-to-source: Unsupported in WinForms DataBinding (workaround: additional dedicated VM property with NO-OP property setter).
 
 ### Add Object DataSource to Solution, treat ViewModels also as DataSources
 
@@ -307,13 +308,13 @@ Subsequently, use BindingSource components in Forms/UserControls to bind to the 
 
 ### MVVM Pattern in WinForms (.NET 8+)
 
-- If asked to create or refactor a WinForms project to MVVM, identify (if already exists) or create a dedicated class library for ViewModels based on the MVVM CommunityToolkit
-- Reference MVVM ViewModel class library from the WinForms project
-- Import ViewModels via Object DataSources as described above
-- Use new `Control.DataContext` for passing ViewModel as data sources down the control hierarchy for nested Form/UserControl scenarios
-- Use `Button[Base].Command` or `ToolStripItem.Command` for MVVM command bindings. Use the CommandParameter property for passing parameters.
+* If asked to create or refactor a WinForms project to MVVM, identify (if already exists) or create a dedicated class library for ViewModels based on the MVVM CommunityToolkit
+* Reference MVVM ViewModel class library from the WinForms project
+* Import ViewModels via Object DataSources as described above
+* Use new `Control.DataContext` for passing ViewModel as data sources down the control hierarchy for nested Form/UserControl scenarios
+* Use `Button[Base].Command` or `ToolStripItem.Command` for MVVM command bindings. Use the CommandParameter property for passing parameters.
 
-- - Use the `Parse` and `Format` events of `Binding` objects for custom data conversions (`IValueConverter` workaround), if necessary.
+* * Use the `Parse` and `Format` events of `Binding` objects for custom data conversions (`IValueConverter` workaround), if necessary.
 
 ```csharp
 private void PrincipleApproachForIValueConverterWorkaround()
@@ -327,8 +328,9 @@ private void PrincipleApproachForIValueConverterWorkaround()
    b.Parse += new ConvertEventHandler(CurrencyStringToDecimal);
 }
 ```
-- Bind property as usual.
-- Bind commands the same way - ViewModels are Data SOurces! Do it like so:
+* Bind property as usual.
+* Bind commands the same way - ViewModels are Data SOurces! Do it like so:
+
 ```csharp
 // Create BindingSource
 components = new Container();
@@ -370,15 +372,15 @@ await InvokeAsync<string>(async (ct) => await LoadDataAsync(ct), outerCancellati
 
 ### Form Async Methods (.NET 9+)
 
-- `ShowAsync()`: Completes when form closes. 
+* `ShowAsync()`: Completes when form closes.
   Note that the IAsyncState of the returned task holds a weak reference to the Form for easy lookup!
-- `ShowDialogAsync()`: Modal with dedicated message queue
+* `ShowDialogAsync()`: Modal with dedicated message queue
 
 ### CRITICAL: Async EventHandler Pattern
 
-- All the following rules are true for both `[modifier] void async EventHandler(object? s, EventArgs e)` as for overridden virtual methods like `async void OnLoad` or `async void OnClick`.
-- `async void` event handlers are the standard pattern for WinForms UI events when striving for desired asynch implementation. 
-- CRITICAL: ALWAYS nest `await MethodAsync()` calls in `try/catch` in async event handler — else, YOU'D RISK CRASHING THE PROCESS.
+* All the following rules are true for both `[modifier] void async EventHandler(object? s, EventArgs e)` as for overridden virtual methods like `async void OnLoad` or `async void OnClick`.
+* `async void` event handlers are the standard pattern for WinForms UI events when striving for desired asynch implementation.
+* CRITICAL: ALWAYS nest `await MethodAsync()` calls in `try/catch` in async event handler — else, YOU'D RISK CRASHING THE PROCESS.
 
 ## Exception Handling in WinForms
 
@@ -387,14 +389,14 @@ await InvokeAsync<string>(async (ct) => await LoadDataAsync(ct), outerCancellati
 WinForms provides two primary mechanisms for handling unhandled exceptions:
 
 **AppDomain.CurrentDomain.UnhandledException:**
-- Catches exceptions from any thread in the AppDomain
-- Cannot prevent application termination
-- Use for logging critical errors before shutdown
+* Catches exceptions from any thread in the AppDomain
+* Cannot prevent application termination
+* Use for logging critical errors before shutdown
 
 **Application.ThreadException:**
-- Catches exceptions on the UI thread only
-- Can prevent application crash by handling the exception
-- Use for graceful error recovery in UI operations
+* Catches exceptions on the UI thread only
+* Can prevent application crash by handling the exception
+* Use for graceful error recovery in UI operations
 
 ### Exception Dispatch in Async/Await Context
 
@@ -419,10 +421,10 @@ catch (Exception ex)
 ```
 
 **Important Notes:**
-- `Application.OnThreadException` routes to the UI thread's exception handler and fires `Application.ThreadException`. 
-- Never call it from background threads — marshal to UI thread first.
-- For process termination on unhandled exceptions, use `Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException)` at startup.
-- **VB Limitation:** VB cannot await in catch block. Avoid, or work around with state machine pattern.
+* `Application.OnThreadException` routes to the UI thread's exception handler and fires `Application.ThreadException`.
+* Never call it from background threads — marshal to UI thread first.
+* For process termination on unhandled exceptions, use `Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException)` at startup.
+* **VB Limitation:** VB cannot await in catch block. Avoid, or work around with state machine pattern.
 
 ## CRITICAL: Manage CodeDOM Serialization
 
@@ -471,102 +473,103 @@ public class CustomControl : Control
 ### Core Rules
 
 **Scaling and DPI:**
-- Use adequate margins/padding; prefer TableLayoutPanel (TLP)/FlowLayoutPanel (FLP) over absolute positioning of controls.
-- The layout cell-sizing approach priority for TLPs is:
+* Use adequate margins/padding; prefer TableLayoutPanel (TLP)/FlowLayoutPanel (FLP) over absolute positioning of controls.
+* The layout cell-sizing approach priority for TLPs is:
   * Rows: AutoSize > Percent > Absolute
   * Columns: AutoSize > Percent > Absolute
 
-- For newly added Forms/UserControls: Assume 96 DPI/100% for `AutoScaleMode` and scaling
-- For existing Forms: Leave AutoScaleMode setting as-is, but take scaling for coordinate-related properties into account
+* For newly added Forms/UserControls: Assume 96 DPI/100% for `AutoScaleMode` and scaling
+* For existing Forms: Leave AutoScaleMode setting as-is, but take scaling for coordinate-related properties into account
 
-- Be DarkMode-aware in .NET 9+ - Query current DarkMode status: `Application.IsDarkModeEnabled`
+* Be DarkMode-aware in .NET 9+ - Query current DarkMode status: `Application.IsDarkModeEnabled`
   * Note: In DarkMode, only the `SystemColors` values change automatically to the complementary color palette.
 
-- Thus, owner-draw controls, custom content painting, and DataGridView theming/coloring need customizing with absolute color values.
+* Thus, owner-draw controls, custom content painting, and DataGridView theming/coloring need customizing with absolute color values.
 
 ### Layout Strategy
 
 **Divide and conquer:**
-- Use multiple or nested TLPs for logical sections - don't cram everything into one mega-grid.
-- Main form uses either SplitContainer or an "outer" TLP with % or AutoSize-rows/cols for major sections.
-- Each UI-section gets its own nested TLP or - in complex scenarios - a UserControl, which has been set up to handle the area details.
+* Use multiple or nested TLPs for logical sections - don't cram everything into one mega-grid.
+* Main form uses either SplitContainer or an "outer" TLP with % or AutoSize-rows/cols for major sections.
+* Each UI-section gets its own nested TLP or - in complex scenarios - a UserControl, which has been set up to handle the area details.
 
 **Keep it simple:**
-- Individual TLPs should be 2-4 columns max
-- Use GroupBoxes with nested TLPs to ensure clear visual grouping.
-- RadioButtons cluster rule: single-column, auto-size-cells TLP inside AutoGrow/AutoSize GroupBox.
-- Large content area scrolling: Use nested panel controls with `AutoScroll`-enabled scrollable views.
+* Individual TLPs should be 2-4 columns max
+* Use GroupBoxes with nested TLPs to ensure clear visual grouping.
+* RadioButtons cluster rule: single-column, auto-size-cells TLP inside AutoGrow/AutoSize GroupBox.
+* Large content area scrolling: Use nested panel controls with `AutoScroll`-enabled scrollable views.
 
 **Sizing rules: TLP cell fundamentals**
-- Columns:
+* Columns:
   * AutoSize for caption columns with `Anchor = Left | Right`.
-  * Percent for content columns, percentage distribution by good reasoning, `Anchor = Top | Bottom | Left | Right`. 
+  * Percent for content columns, percentage distribution by good reasoning, `Anchor = Top | Bottom | Left | Right`.
     Never dock cells, always anchor!
-  * Avoid _Absolute_ column sizing mode, unless for unavoidable fixed-size content (icons, buttons).
-- Rows:
+  * Avoid *Absolute* column sizing mode, unless for unavoidable fixed-size content (icons, buttons).
+* Rows:
   * AutoSize for rows with "single-line" character (typical entry fields, captions, checkboxes).
   * Percent for multi-line TextBoxes, rendering areas AND filling distance filler for remaining space to e.g., a bottom button row (OK|Cancel).
-  * Avoid _Absolute_ row sizing mode even more.
+  * Avoid *Absolute* row sizing mode even more.
 
-- Margins matter: Set `Margin` on controls (min. default 3px). 
-- Note: `Padding` does not have an effect in TLP cells.
+* Margins matter: Set `Margin` on controls (min. default 3px).
+* Note: `Padding` does not have an effect in TLP cells.
 
 ### Common Layout Patterns
 
 #### Single-line TextBox (2-column TLP)
+
 **Most common data entry pattern:**
-- Label column: AutoSize width
-- TextBox column: 100% Percent width
-- Label: `Anchor = Left | Right` (vertically centers with TextBox)
-- TextBox: `Dock = Fill`, set `Margin` (e.g., 3px all sides)
+* Label column: AutoSize width
+* TextBox column: 100% Percent width
+* Label: `Anchor = Left | Right` (vertically centers with TextBox)
+* TextBox: `Dock = Fill`, set `Margin` (e.g., 3px all sides)
 
 #### Multi-line TextBox or Larger Custom Content - Option A (2-column TLP)
-- Label in same row, `Anchor = Top | Left`
-- TextBox: `Dock = Fill`, set `Margin`
-- Row height: AutoSize or Percent to size the cell (cell sizes the TextBox)
+* Label in same row, `Anchor = Top | Left`
+* TextBox: `Dock = Fill`, set `Margin`
+* Row height: AutoSize or Percent to size the cell (cell sizes the TextBox)
 
 #### Multi-line TextBox or Larger Custom Content - Option B (1-column TLP, separate rows)
-- Label in dedicated row above TextBox
-- Label: `Dock = Fill` or `Anchor = Left`
-- TextBox in next row: `Dock = Fill`, set `Margin`
-- TextBox row: AutoSize or Percent to size the cell
+* Label in dedicated row above TextBox
+* Label: `Dock = Fill` or `Anchor = Left`
+* TextBox in next row: `Dock = Fill`, set `Margin`
+* TextBox row: AutoSize or Percent to size the cell
 
 **Critical:** For multi-line TextBox, the TLP cell defines the size, not the TextBox's content.
 
 ### Container Sizing (CRITICAL - Prevents Clipping)
 
 **For GroupBox/Panel inside TLP cells:**
-- MUST set `AutoSize = true` and `AutoSizeMode = GrowOnly`
-- Should `Dock = Fill` in their cell
-- Parent TLP row should be AutoSize
-- Content inside GroupBox/Panel should use nested TLP or FlowLayoutPanel
+* MUST set `AutoSize = true` and `AutoSizeMode = GrowOnly`
+* Should `Dock = Fill` in their cell
+* Parent TLP row should be AutoSize
+* Content inside GroupBox/Panel should use nested TLP or FlowLayoutPanel
 
 **Why:** Fixed-height containers clip content even when parent row is AutoSize. The container reports its fixed size, breaking the sizing chain.
 
 ### Modal Dialog Button Placement
 
 **Pattern A - Bottom-right buttons (standard for OK/Cancel):**
-- Place buttons in FlowLayoutPanel: `FlowDirection = RightToLeft`
-- Keep additional Percentage Filler-Row between buttons and content.
-- FLP goes in bottom row of main TLP
-- Visual order of buttons: [OK] (left) [Cancel] (right)
+* Place buttons in FlowLayoutPanel: `FlowDirection = RightToLeft`
+* Keep additional Percentage Filler-Row between buttons and content.
+* FLP goes in bottom row of main TLP
+* Visual order of buttons: [OK] (left) [Cancel] (right)
 
 **Pattern B - Top-right stacked buttons (wizards/browsers):**
-- Place buttons in FlowLayoutPanel: `FlowDirection = TopDown`
-- FLP in dedicated rightmost column of main TLP
-- Column: AutoSize
-- FLP: `Anchor = Top | Right`
-- Order: [OK] above [Cancel]
+* Place buttons in FlowLayoutPanel: `FlowDirection = TopDown`
+* FLP in dedicated rightmost column of main TLP
+* Column: AutoSize
+* FLP: `Anchor = Top | Right`
+* Order: [OK] above [Cancel]
 
 **When to use:**
-- Pattern A: Data entry dialogs, settings, confirmations
-- Pattern B: Multi-step wizards, navigation-heavy dialogs
+* Pattern A: Data entry dialogs, settings, confirmations
+* Pattern B: Multi-step wizards, navigation-heavy dialogs
 
 ### Complex Layouts
 
-- For complex layouts, consider creating dedicated UserControls for logical sections.
-- Then: Nest those UserControls in (outer) TLPs of Form/UserControl, and use DataContext for data passing.
-- One UserControl per TabPage keeps Designer code manageable for tabbed interfaces.
+* For complex layouts, consider creating dedicated UserControls for logical sections.
+* Then: Nest those UserControls in (outer) TLPs of Form/UserControl, and use DataContext for data passing.
+* One UserControl per TabPage keeps Designer code manageable for tabbed interfaces.
 
 ### Modal Dialogs
 
@@ -574,7 +577,7 @@ public class CustomControl : Control
 |--------|------|
 | Dialog buttons | Order -> Primary (OK): `AcceptButton`, `DialogResult = OK` / Secondary (Cancel): `CancelButton`, `DialogResult = Cancel` |
 | Close strategy | `DialogResult` gets applied by DialogResult implicitly, no need for additional code |
-| Validation | Perform on _Form_, not on Field scope. Never block focus-change with `CancelEventArgs.Cancel = true` |
+| Validation | Perform on *Form*, not on Field scope. Never block focus-change with `CancelEventArgs.Cancel = true` |
 
 Use `DataContext` property (.NET 8+) of Form to pass and return modal data objects.
 
@@ -588,9 +591,9 @@ Use `DataContext` property (.NET 8+) of Form to pass and return modal data objec
 
 ### Accessibility
 
-- CRITICAL: Set `AccessibleName` and `AccessibleDescription` on actionable controls
-- Maintain logical control tab order via `TabIndex` (A11Y follows control addition order)
-- Verify keyboard-only navigation, unambiguous mnemonics, and screen reader compatibility
+* CRITICAL: Set `AccessibleName` and `AccessibleDescription` on actionable controls
+* Maintain logical control tab order via `TabIndex` (A11Y follows control addition order)
+* Verify keyboard-only navigation, unambiguous mnemonics, and screen reader compatibility
 
 ### TreeView and ListView
 
@@ -604,16 +607,16 @@ Use `DataContext` property (.NET 8+) of Form to pass and return modal data objec
 
 ### DataGridView
 
-- Prefer derived class with double buffering enabled
-- Configure colors when in DarkMode!
-- Large data: page/virtualize (`VirtualMode = True` with `CellValueNeeded`)
+* Prefer derived class with double buffering enabled
+* Configure colors when in DarkMode!
+* Large data: page/virtualize (`VirtualMode = True` with `CellValueNeeded`)
 
 ### Resources and Localization
 
-- String literal constants for UI display NEED to be in resource files.
-- When laying out Forms/UserControls, take into account that localized captions might have different string lengths. 
-- Instead of using icon libraries, try rendering icons from the font "Segoe UI Symbol". 
-- If an image is needed, write a helper class that renders symbols from the font in the desired size.
+* String literal constants for UI display NEED to be in resource files.
+* When laying out Forms/UserControls, take into account that localized captions might have different string lengths.
+* Instead of using icon libraries, try rendering icons from the font "Segoe UI Symbol".
+* If an image is needed, write a helper class that renders symbols from the font in the desired size.
 
 ## Critical Reminders
 

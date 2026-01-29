@@ -28,6 +28,7 @@ Create an upgrade strategy prioritizing least-dependent projects first.
 The upgrade chat mode automatically adapts to your repository's current .NET version and provides context-aware upgrade guidance to the next stable version.
 
 It will help you:
+
 - Auto-detect current .NET versions across all projects
 - Generate optimal upgrade sequences
 - Identify breaking changes and modernization opportunities
@@ -40,6 +41,7 @@ It will help you:
 Execute comprehensive .NET framework upgrades with structured guidance!
 
 The instructions provide:
+
 - Sequential upgrade strategies
 - Dependency analysis and sequencing
 - Framework targeting and code adjustments
@@ -56,6 +58,7 @@ Use these instructions when implementing upgrade plans to ensure proper executio
 Quick access to specialized upgrade analysis prompts!
 
 The prompts collection includes ready-to-use queries for:
+
 - Project discovery and assessment
 - Upgrade strategy and sequencing
 - Framework targeting and code adjustments
@@ -68,6 +71,7 @@ Use these prompts for targeted analysis of specific upgrade aspects.
 ---
 
 ## Quick Start
+
 1. Run a discovery pass to enumerate all `*.sln` and `*.csproj` files in the repository.
 2. Detect the current .NET version(s) used across projects.
 3. Identify the latest available stable .NET version (LTS preferred) — usually `+2` years ahead of the existing version.
@@ -77,6 +81,7 @@ Use these prompts for targeted analysis of specific upgrade aspects.
 ---
 
 ## Auto-Detect Current .NET Version
+
 To automatically detect the current framework versions across the solution:
 
 ```bash
@@ -99,6 +104,7 @@ dotnet --info | grep "Version"
 ---
 
 ## Discovery & Analysis Commands
+
 ```bash
 # List all projects
 dotnet sln list
@@ -119,6 +125,7 @@ dotnet msbuild <ProjectName>.csproj /t:GenerateRestoreGraphFile /p:RestoreGraphO
 ---
 
 ## Classification Rules
+
 - `TargetFramework` starts with `netcoreapp`, `net5.0+`, `net6.0+`, etc. → **Modern .NET**
 - `netstandard*` → **.NET Standard** (migrate to current .NET version)
 - `net4*` → **.NET Framework** (migrate via intermediate step to .NET 6+)
@@ -126,6 +133,7 @@ dotnet msbuild <ProjectName>.csproj /t:GenerateRestoreGraphFile /p:RestoreGraphO
 ---
 
 ## Upgrade Sequence
+
 1. **Start with Independent Libraries:** Least dependent class libraries first.
 2. **Next:** Shared components and common utilities.
 3. **Then:** API, Web, or Function projects.
@@ -137,25 +145,31 @@ dotnet msbuild <ProjectName>.csproj /t:GenerateRestoreGraphFile /p:RestoreGraphO
 ---
 
 ## Per-Project Upgrade Flow
+
 1. **Create branch:** `upgrade/<project>-to-<targetVersion>`
 2. **Edit `<TargetFramework>`** in `.csproj` to the suggested version (e.g., `net9.0`)
 3. **Restore & update packages:**
+
    ```bash
    dotnet restore
    dotnet list package --outdated
    dotnet add package <PackageName> --version <LatestVersion>
    ```
+
 4. **Build & test:**
+
    ```bash
    dotnet build <ProjectName>.csproj
    dotnet test <ProjectName>.Tests.csproj
    ```
+
 5. **Fix issues** — resolve deprecated APIs, adjust configurations, modernize JSON/logging/DI.
 6. **Commit & push** PR with test evidence and checklist.
 
 ---
 
 ## Breaking Changes & Modernization
+
 - Use `.NET Upgrade Assistant` for initial recommendations.
 - Apply analyzers to detect obsolete APIs.
 - Replace outdated SDKs (e.g., `Microsoft.Azure.*` → `Azure.*`).
@@ -167,9 +181,11 @@ dotnet msbuild <ProjectName>.csproj /t:GenerateRestoreGraphFile /p:RestoreGraphO
 ---
 
 ## CI/CD Configuration Updates
+
 Ensure pipelines use the detected **target version** dynamically:
 
 **Azure DevOps**
+
 ```yaml
 - task: UseDotNet@2
   inputs:
@@ -178,6 +194,7 @@ Ensure pipelines use the detected **target version** dynamically:
 ```
 
 **GitHub Actions**
+
 ```yaml
 - uses: actions/setup-dotnet@v4
   with:
@@ -187,6 +204,7 @@ Ensure pipelines use the detected **target version** dynamically:
 ---
 
 ## Validation Checklist
+
 - [ ] TargetFramework upgraded to next stable version
 - [ ] All NuGet packages compatible and updated
 - [ ] Build and test pipelines succeed locally and in CI
@@ -196,6 +214,7 @@ Ensure pipelines use the detected **target version** dynamically:
 ---
 
 ## Branching & Rollback Strategy
+
 - Use feature branches: `upgrade/<project>-to-<targetVersion>`
 - Commit frequently and keep changes atomic
 - If CI fails after merge, revert PR and isolate failing modules
@@ -206,6 +225,7 @@ Ensure pipelines use the detected **target version** dynamically:
 ---
 
 ## Automation & Scaling
+
 - Automate upgrade detection with GitHub Actions or Azure Pipelines.
 - Schedule nightly runs to check for new .NET releases via `dotnet --list-sdks`.
 - Use agents to automatically raise PRs for outdated frameworks.
@@ -213,6 +233,7 @@ Ensure pipelines use the detected **target version** dynamically:
 ---
 
 ## Chatmode Prompt Library
+
 1. "List all projects with current and recommended .NET versions."
 2. "Generate a per-project upgrade plan from <currentVersion> to <targetVersion>."
 3. "Suggest .csproj and pipeline edits to upgrade <ProjectName>."

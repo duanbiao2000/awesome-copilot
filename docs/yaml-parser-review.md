@@ -76,6 +76,7 @@
 ## 建议和改进
 
 1. **代码重构**：
+
    ```javascript
    // 使用可选链操作符简化代码
    function extractMcpServers(filePath) {
@@ -85,6 +86,7 @@
    ```
 
 2. **异步支持**：
+
    ```javascript
    // 添加异步版本的文件读取
    async function parseFrontmatterAsync(filePath) {
@@ -100,6 +102,7 @@
    ```
 
 3. **类型安全**：
+
    ```javascript
    // 添加更详细的 JSDoc 类型注解
    /**
@@ -114,6 +117,7 @@
    ```
 
 4. **安全增强**：
+
    ```javascript
    // 添加路径验证
    const path = require("path");

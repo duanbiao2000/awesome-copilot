@@ -169,6 +169,7 @@ When working with Logic Apps or Power Automate flow JSON files, ensure your work
 - **Document complex expressions** with comments
 
 Common expression patterns:
+
 - String manipulation: `concat()`, `replace()`, `substring()`
 - Collection operations: `filter()`, `map()`, `select()`
 - Conditional logic: `if()`, `and()`, `or()`, `equals()`
@@ -211,16 +212,19 @@ Common logical expression functions for conditions in Power Automate:
 | `not` | Returns opposite of a boolean value | `@not(contains(item()?['Status'], 'Failed'))` |
 
 Example: Check if a status is "completed" OR "unnecessary":
+
 ```
 @or(equals(item()?['Status'], 'completed'), equals(item()?['Status'], 'unnecessary'))
 ```
 
 Example: Check if status is "blocked" AND assigned to specific person:
+
 ```
 @and(equals(item()?['Status'], 'blocked'), equals(item()?['Assigned'], 'John Wonder'))
 ```
 
 Example: Check if a payment is overdue AND incomplete:
+
 ```
 @and(greater(item()?['Due'], item()?['Paid']), less(item()?['dueDate'], utcNow()))
 ```
@@ -409,7 +413,7 @@ Example: Check if a payment is overdue AND incomplete:
 
 While Azure Logic Apps and Power Automate share the same underlying workflow engine and language, they have different target audiences and capabilities:
 
-- **Power Automate**: 
+- **Power Automate**:
   - User-friendly interface for business users
   - Part of the Power Platform ecosystem
   - Integration with Microsoft 365 and Dynamics 365
@@ -424,23 +428,27 @@ While Azure Logic Apps and Power Automate share the same underlying workflow eng
 ### Logic App Types
 
 #### Consumption Logic Apps
+
 - Pay-per-execution pricing model
 - Serverless architecture
 - Suitable for variable or unpredictable workloads
 
 #### Standard Logic Apps
+
 - Fixed pricing based on App Service Plan
 - Predictable performance
 - Local development support
 - Integration with VNets
 
 #### Integration Service Environment (ISE)
+
 - Dedicated deployment environment
 - Higher throughput and longer execution durations
 - Direct access to VNet resources
 - Isolated runtime environment
 
 ### Power Automate License Types
+
 - **Power Automate per user plan**: For individual users
 - **Power Automate per flow plan**: For specific workflows
 - **Power Automate Process plan**: For RPA capabilities
@@ -449,6 +457,7 @@ While Azure Logic Apps and Power Automate share the same underlying workflow eng
 ## Common Integration Patterns
 
 ### Architectural Patterns
+
 - **Mediator Pattern**: Use Logic Apps/Power Automate as an orchestration layer between systems
 - **Content-Based Routing**: Route messages based on content to different destinations
 - **Message Transformation**: Transform messages between formats (JSON, XML, EDI, etc.)
@@ -459,7 +468,9 @@ While Azure Logic Apps and Power Automate share the same underlying workflow eng
 - **Choreography Pattern**: Coordinate multiple services without a central orchestrator
 
 ### Action Patterns
+
 - **Asynchronous Processing Pattern**: For long-running operations
+
   ```json
   "LongRunningAction": {
     "type": "Http",
@@ -477,6 +488,7 @@ While Azure Logic Apps and Power Automate share the same underlying workflow eng
   ```
 
 - **Webhook Pattern**: For callback-based processing
+
   ```json
   "WebhookAction": {
     "type": "ApiConnectionWebhook",
@@ -495,6 +507,7 @@ While Azure Logic Apps and Power Automate share the same underlying workflow eng
   ```
 
 ### Enterprise Integration Patterns
+
 - **B2B Message Exchange**: Exchange EDI documents between trading partners (AS2, X12, EDIFACT)
 - **Integration Account**: Use for storing and managing B2B artifacts (agreements, schemas, maps)
 - **Rules Engine**: Implement complex business rules using the Azure Logic Apps Rules Engine
@@ -1450,7 +1463,7 @@ Implement a multi-layered exception handling approach for robust workflows:
 }
 ```
 
-3. **Centralized Error Logging**:
+1. **Centralized Error Logging**:
    - Create a dedicated Logic App for error handling that other workflows can call
    - Log errors with correlation IDs for traceability across systems
    - Categorize errors by type and severity for better analysis

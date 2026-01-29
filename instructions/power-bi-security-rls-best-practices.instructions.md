@@ -6,11 +6,13 @@ applyTo: '**/*.{pbix,dax,md,txt,json,csharp,powershell}'
 # Power BI Security and Row-Level Security Best Practices
 
 ## Overview
+
 This document provides comprehensive instructions for implementing robust security patterns in Power BI, focusing on Row-Level Security (RLS), dynamic security, and governance best practices based on Microsoft's official guidance.
 
 ## Row-Level Security Fundamentals
 
 ### 1. Basic RLS Implementation
+
 ```dax
 // Simple user-based filtering
 [EmailAddress] = USERNAME()
@@ -28,6 +30,7 @@ IF(
 ```
 
 ### 2. Dynamic RLS with Custom Data
+
 ```dax
 // Using CUSTOMDATA() for dynamic filtering
 VAR UserRole = CUSTOMDATA()
@@ -42,6 +45,7 @@ RETURN
 ```
 
 ### 3. Advanced Security Patterns
+
 ```dax
 // Hierarchical security with territory lookups
 =DimSalesTerritory[SalesTerritoryKey]=LOOKUPVALUE(
@@ -64,6 +68,7 @@ RETURN
 ## Embedded Analytics Security
 
 ### 1. Static RLS Implementation
+
 ```csharp
 // Static RLS with fixed roles
 var rlsidentity = new EffectiveIdentity(
@@ -74,6 +79,7 @@ var rlsidentity = new EffectiveIdentity(
 ```
 
 ### 2. Dynamic RLS with Custom Data
+
 ```csharp
 // Dynamic RLS with custom data
 var rlsidentity = new EffectiveIdentity(
@@ -85,6 +91,7 @@ var rlsidentity = new EffectiveIdentity(
 ```
 
 ### 3. Multi-Dataset Security
+
 ```json
 {
     "accessLevel": "View",
@@ -101,6 +108,7 @@ var rlsidentity = new EffectiveIdentity(
 ## Database-Level Security Integration
 
 ### 1. SQL Server RLS Integration
+
 ```sql
 -- Creating security schema and predicate function
 CREATE SCHEMA Security;
@@ -123,6 +131,7 @@ GO
 ```
 
 ### 2. Fabric Warehouse Security
+
 ```sql
 -- Creating schema for Security
 CREATE SCHEMA Security;
@@ -149,6 +158,7 @@ GO
 ## Advanced Security Patterns
 
 ### 1. Paginated Reports Security
+
 ```json
 {
     "format": "PDF",
@@ -161,11 +171,13 @@ GO
 ```
 
 ### 2. Power Pages Integration
+
 ```html
 {% powerbi authentication_type:"powerbiembedded" path:"https://app.powerbi.com/groups/00000000-0000-0000-0000-000000000000/reports/00000000-0000-0000-0000-000000000001/ReportSection" roles:"pagesuser" %}
 ```
 
 ### 3. Multi-Tenant Security
+
 ```json
 {
   "datasets": [
@@ -210,6 +222,7 @@ GO
 ## Security Design Patterns
 
 ### 1. Partial RLS Implementation
+
 ```dax
 // Create summary table for partial RLS
 SalesRevenueSummary =
@@ -223,6 +236,7 @@ Salesperson Filter = [EmailAddress] = USERNAME()
 ```
 
 ### 2. Hierarchical Security
+
 ```dax
 // Manager can see all, others see their own
 VAR CurrentUser = USERNAME()
@@ -246,6 +260,7 @@ RETURN
 ```
 
 ### 3. Time-Based Security
+
 ```dax
 // Restrict access to recent data based on role
 VAR UserRole = LOOKUPVALUE(UserRoles[Role], UserRoles[Email], USERNAME())
@@ -264,6 +279,7 @@ RETURN
 ## Security Validation and Testing
 
 ### 1. Role Validation Patterns
+
 ```dax
 // Security testing measure
 Security Test = 
@@ -281,6 +297,7 @@ RETURN
 ```
 
 ### 2. Data Exposure Audit
+
 ```dax
 // Audit measure to track data access
 Data Access Audit = 
@@ -297,6 +314,7 @@ RETURN
 ## Governance and Administration
 
 ### 1. Automated Security Group Management
+
 ```powershell
 # Add security group to Power BI workspace
 # Sign in to Power BI
@@ -313,6 +331,7 @@ Add-PowerBIWorkspaceUser -Id $($pbiWorkspace.Id) -AccessRight Member -PrincipalT
 ```
 
 ### 2. Security Monitoring
+
 ```powershell
 # Monitor Power BI access patterns
 $workspaces = Get-PowerBIWorkspace
@@ -326,6 +345,7 @@ foreach ($workspace in $workspaces) {
 ```
 
 ### 3. Compliance Reporting
+
 ```dax
 // Compliance dashboard measures
 Users with Data Access = 
@@ -354,6 +374,7 @@ CALCULATE(
 ### ✅ Security Best Practices
 
 #### 1. Principle of Least Privilege
+
 ```dax
 // Always default to restrictive access
 Default Security = 
@@ -371,6 +392,7 @@ RETURN
 ```
 
 #### 2. Explicit Role Validation
+
 ```dax
 // Validate expected roles explicitly
 Role-Based Filter = 
@@ -392,6 +414,7 @@ RETURN
 ### ❌ Security Anti-Patterns to Avoid
 
 #### 1. Overly Permissive Defaults
+
 ```dax
 // ❌ AVOID: This grants full access to unexpected users
 Bad Security Filter = 
@@ -403,6 +426,7 @@ IF(
 ```
 
 #### 2. Complex Security Logic
+
 ```dax
 // ❌ AVOID: Overly complex security that's hard to audit
 Overly Complex Security = 
@@ -420,6 +444,7 @@ IF(
 ## Security Integration Patterns
 
 ### 1. Azure AD Integration
+
 ```csharp
 // Generate token with Azure AD user context
 var tokenRequest = new GenerateTokenRequestV2(
@@ -433,6 +458,7 @@ var embedToken = pbiClient.EmbedToken.GenerateToken(tokenRequest);
 ```
 
 ### 2. Service Principal Authentication
+
 ```csharp
 // Service principal with RLS for embedded scenarios
 public EmbedToken GetEmbedToken(Guid reportId, IList<Guid> datasetIds, [Optional] Guid targetWorkspaceId)
@@ -461,6 +487,7 @@ public EmbedToken GetEmbedToken(Guid reportId, IList<Guid> datasetIds, [Optional
 ## Security Monitoring and Auditing
 
 ### 1. Access Pattern Analysis
+
 ```dax
 // Identify unusual access patterns
 Unusual Access Pattern = 
@@ -484,6 +511,7 @@ RETURN
 ```
 
 ### 2. Data Breach Detection
+
 ```dax
 // Detect potential data exposure
 Potential Data Exposure = 

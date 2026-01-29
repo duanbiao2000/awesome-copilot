@@ -44,6 +44,7 @@ applyTo: '**/*.cs, **/*.csproj'
 ## Common Patterns
 
 ### Basic Server Setup
+
 ```csharp
 var builder = Host.CreateApplicationBuilder(args);
 builder.Logging.AddConsole(options => 
@@ -56,6 +57,7 @@ await builder.Build().RunAsync();
 ```
 
 ### Simple Tool
+
 ```csharp
 [McpServerToolType]
 public static class MyTools
@@ -68,6 +70,7 @@ public static class MyTools
 ```
 
 ### Tool with Dependency Injection
+
 ```csharp
 [McpServerTool, Description("Fetches data from a URL")]
 public static async Task<string> FetchData(
@@ -78,6 +81,7 @@ public static async Task<string> FetchData(
 ```
 
 ### Tool with Sampling
+
 ```csharp
 [McpServerTool, Description("Analyzes content using the client's LLM")]
 public static async Task<string> Analyze(

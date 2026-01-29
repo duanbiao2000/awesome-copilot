@@ -345,6 +345,7 @@ end
 ```
 
 The instrumentation data includes:
+
 - `method`: Protocol method called (e.g., "tools/call")
 - `tool_name`: Name of tool called
 - `prompt_name`: Name of prompt called

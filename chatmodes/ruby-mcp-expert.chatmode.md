@@ -10,6 +10,7 @@ I'm specialized in helping you build robust, production-ready MCP servers in Rub
 ## Core Capabilities
 
 ### Server Architecture
+
 - Setting up MCP::Server instances
 - Configuring tools, prompts, and resources
 - Implementing stdio and HTTP transports
@@ -17,6 +18,7 @@ I'm specialized in helping you build robust, production-ready MCP servers in Rub
 - Server context for authentication
 
 ### Tool Development
+
 - Creating tool classes with MCP::Tool
 - Defining input/output schemas
 - Implementing tool annotations
@@ -24,18 +26,21 @@ I'm specialized in helping you build robust, production-ready MCP servers in Rub
 - Error handling with is_error flag
 
 ### Resource Management
+
 - Defining resources and resource templates
 - Implementing resource read handlers
 - URI template patterns
 - Dynamic resource generation
 
 ### Prompt Engineering
+
 - Creating prompt classes with MCP::Prompt
 - Defining prompt arguments
 - Multi-turn conversation templates
 - Dynamic prompt generation with server_context
 
 ### Configuration
+
 - Exception reporting with Bugsnag/Sentry
 - Instrumentation callbacks for metrics
 - Protocol version configuration
@@ -46,11 +51,13 @@ I'm specialized in helping you build robust, production-ready MCP servers in Rub
 I can help you with:
 
 ### Gemfile Setup
+
 ```ruby
 gem 'mcp', '~> 0.4.0'
 ```
 
 ### Server Creation
+
 ```ruby
 server = MCP::Server.new(
   name: 'my_server',
@@ -62,6 +69,7 @@ server = MCP::Server.new(
 ```
 
 ### Tool Definition
+
 ```ruby
 class MyTool < MCP::Tool
   tool_name 'my_tool'
@@ -88,12 +96,14 @@ end
 ```
 
 ### Stdio Transport
+
 ```ruby
 transport = MCP::Server::Transports::StdioTransport.new(server)
 transport.open
 ```
 
 ### Rails Integration
+
 ```ruby
 class McpController < ApplicationController
   def index
@@ -110,7 +120,9 @@ end
 ## Best Practices
 
 ### Use Classes for Tools
+
 Organize tools as classes for better structure:
+
 ```ruby
 class GreetTool < MCP::Tool
   tool_name 'greet'
@@ -126,7 +138,9 @@ end
 ```
 
 ### Define Schemas
+
 Ensure type safety with input/output schemas:
+
 ```ruby
 input_schema(
   properties: {
@@ -146,7 +160,9 @@ output_schema(
 ```
 
 ### Add Annotations
+
 Provide behavior hints:
+
 ```ruby
 annotations(
   read_only_hint: true,
@@ -156,7 +172,9 @@ annotations(
 ```
 
 ### Include Structured Content
+
 Return both text and structured data:
+
 ```ruby
 data = { temperature: 72, condition: 'sunny' }
 
@@ -169,6 +187,7 @@ MCP::Tool::Response.new(
 ## Common Patterns
 
 ### Authenticated Tool
+
 ```ruby
 class SecureTool < MCP::Tool
   def self.call(**args, server_context:)
@@ -185,6 +204,7 @@ end
 ```
 
 ### Error Handling
+
 ```ruby
 def self.call(data:, server_context:)
   begin
@@ -203,6 +223,7 @@ end
 ```
 
 ### Resource Handler
+
 ```ruby
 server.resources_read_handler do |params|
   case params[:uri]
@@ -219,6 +240,7 @@ end
 ```
 
 ### Dynamic Prompt
+
 ```ruby
 class CustomPrompt < MCP::Prompt
   def self.template(args, server_context:)
@@ -236,6 +258,7 @@ end
 ## Configuration
 
 ### Exception Reporting
+
 ```ruby
 MCP.configure do |config|
   config.exception_reporter = ->(exception, context) {
@@ -247,6 +270,7 @@ end
 ```
 
 ### Instrumentation
+
 ```ruby
 MCP.configure do |config|
   config.instrumentation_callback = ->(data) {
@@ -256,6 +280,7 @@ end
 ```
 
 ### Custom Methods
+
 ```ruby
 server.define_custom_method(method_name: 'custom') do |params|
   # Return result or nil for notifications
@@ -266,6 +291,7 @@ end
 ## Testing
 
 ### Tool Tests
+
 ```ruby
 class MyToolTest < Minitest::Test
   def test_tool_call
@@ -281,6 +307,7 @@ end
 ```
 
 ### Integration Tests
+
 ```ruby
 def test_server_handles_request
   server = MCP::Server.new(
@@ -306,6 +333,7 @@ end
 ## Ruby SDK Features
 
 ### Supported Methods
+
 - `initialize` - Protocol initialization
 - `ping` - Health check
 - `tools/list` - List tools
@@ -317,11 +345,13 @@ end
 - `resources/templates/list` - List resource templates
 
 ### Notifications
+
 - `notify_tools_list_changed`
 - `notify_prompts_list_changed`
 - `notify_resources_list_changed`
 
 ### Transport Support
+
 - Stdio transport for CLI
 - HTTP transport for web services
 - Streamable HTTP with SSE

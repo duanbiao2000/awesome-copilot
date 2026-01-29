@@ -6,11 +6,13 @@ applyTo: '**/*.{ts,tsx,js,jsx,json,less,css}'
 # Power BI Custom Visuals Development Best Practices
 
 ## Overview
+
 This document provides comprehensive instructions for developing custom Power BI visuals using modern web technologies including React, D3.js, TypeScript, and advanced testing frameworks, based on Microsoft's official guidance and community best practices.
 
 ## Development Environment Setup
 
 ### 1. Project Initialization
+
 ```typescript
 // Install Power BI visuals tools globally
 npm install -g powerbi-visuals-tools
@@ -24,6 +26,7 @@ pbiviz start
 ```
 
 ### 2. TypeScript Configuration
+
 ```json
 {
     "compilerOptions": {
@@ -51,6 +54,7 @@ pbiviz start
 ## Core Visual Development Patterns
 
 ### 1. Basic Visual Structure
+
 ```typescript
 "use strict";
 import powerbi from "powerbi-visuals-api";
@@ -89,6 +93,7 @@ export class Visual implements IVisual {
 ```
 
 ### 2. Data View Processing
+
 ```typescript
 // Single data mapping example
 export class Visual implements IVisual {
@@ -117,6 +122,7 @@ export class Visual implements IVisual {
 ## React Integration
 
 ### 1. React Visual Setup
+
 ```typescript
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -154,6 +160,7 @@ export class Visual implements IVisual {
 ```
 
 ### 2. React Component with Props
+
 ```typescript
 // React component for Power BI visual
 import * as React from "react";
@@ -200,6 +207,7 @@ export default ReactCircleCard;
 ## D3.js Integration
 
 ### 1. D3 with TypeScript
+
 ```typescript
 import * as d3 from "d3";
 type Selection<T extends d3.BaseType> = d3.Selection<T, any, any, any>;
@@ -283,6 +291,7 @@ export class Visual implements IVisual {
 ```
 
 ### 2. Advanced D3 Patterns
+
 ```typescript
 // Complex D3 visualization with interactions
 export class AdvancedD3Visual implements IVisual {
@@ -345,6 +354,7 @@ export class AdvancedD3Visual implements IVisual {
 ## Advanced Visual Features
 
 ### 1. Custom Formatting Model
+
 ```typescript
 import { formattingSettings } from "powerbi-visuals-utils-formattingmodel";
 
@@ -380,6 +390,7 @@ export class ColorCardSettings extends formattingSettings.SimpleCard {
 ```
 
 ### 2. Interactivity and Selections
+
 ```typescript
 import { interactivitySelectionService, baseBehavior } from "powerbi-visuals-utils-interactivityutils";
 
@@ -420,6 +431,7 @@ export class VisualBehavior extends baseBehavior.BaseBehavior<VisualDataPoint> {
 ```
 
 ### 3. Landing Page Implementation
+
 ```typescript
 export class Visual implements IVisual {
     private element: HTMLElement;
@@ -469,6 +481,7 @@ export class Visual implements IVisual {
 ## Testing Framework
 
 ### 1. Unit Testing Setup
+
 ```typescript
 // Webpack configuration for testing
 const path = require('path');
@@ -516,6 +529,7 @@ module.exports = {
 ```
 
 ### 2. Visual Testing Utilities
+
 ```typescript
 // Test utilities for Power BI visuals
 export class VisualTestUtils {
@@ -559,6 +573,7 @@ export class VisualTestUtils {
 ```
 
 ### 3. Component Testing
+
 ```typescript
 // Jest test for React component
 import * as React from 'react';
@@ -606,6 +621,7 @@ describe('ReactCircleCard', () => {
 ## Advanced Patterns
 
 ### 1. Dialog Box Implementation
+
 ```typescript
 import DialogConstructorOptions = powerbi.extensibility.visual.DialogConstructorOptions;
 import DialogAction = powerbi.DialogAction;
@@ -647,6 +663,7 @@ export class CustomDialog {
 ```
 
 ### 2. Conditional Formatting Integration
+
 ```typescript
 import powerbiVisualsApi from "powerbi-visuals-api";
 import { ColorHelper } from "powerbi-visuals-utils-colorutils";
@@ -685,6 +702,7 @@ export class Visual implements IVisual {
 ```
 
 ### 3. Tooltip Integration
+
 ```typescript
 import { createTooltipServiceWrapper, TooltipEventArgs, ITooltipServiceWrapper } from "powerbi-visuals-utils-tooltiputils";
 
@@ -726,6 +744,7 @@ export class Visual implements IVisual {
 ## Performance Optimization
 
 ### 1. Data Reduction Strategies
+
 ```json
 // Visual capabilities with data reduction
 "dataViewMappings": {
@@ -758,6 +777,7 @@ export class Visual implements IVisual {
 ```
 
 ### 2. Efficient Rendering Patterns
+
 ```typescript
 export class OptimizedVisual implements IVisual {
     private animationFrameId: number;
